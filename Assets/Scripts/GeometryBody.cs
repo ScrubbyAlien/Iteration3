@@ -1,39 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class GeometryBody : MonoBehaviour
 {
-    public float gravityConstant;
+    [SerializeField]
+    private float gravityConstant;
     public float g => gravityConstant;
-    public float speed;
     private new BoxCollider2D collider;
     private Vector2 velocity;
+
+    [SerializeField]
+    private GeometryBodyEvents events;
     
     
     private void Awake() {
         collider = GetComponent<BoxCollider2D>();
-        SetSpeed(speed);
     }
     
     private void Update() {
         if (Physics2D.simulationMode != SimulationMode2D.Script) return;
         Physics2D.Simulate(Time.deltaTime);
 
-        UpdateVelocity();
+        // Apply gravity
+        SetYVelocity(velocity.y + g * Time.deltaTime);
         
         List<Collider2D> others = new();
-        if (collider.Overlap(others) > 0) others.ForEach(other => OnOverlap(other));
+        if (collider.Overlap(others) > 0) others.ForEach(other => {
+            events.OnOverlap?.Invoke(other);
+            OnOverlap(other);
+        });
         
-        transform.position += (Vector3)velocity;
+        transform.position += (Vector3)velocity * Time.deltaTime;
     }
 
-    private void UpdateVelocity() {
-        velocity = new Vector2(
-            speed * Time.deltaTime, 
-            velocity.y + g * Time.deltaTime
-        );
+    private void ApplyGravity() {
+        
     }
 
     private void OnOverlap(Collider2D other) {
@@ -47,15 +51,32 @@ public class GeometryBody : MonoBehaviour
         gravityConstant = newGravityConstant;
     }
 
-    public void SetSpeed(float speed) {
-        this.speed = speed;
+    public void SetXVelocity(float xVelocity) {
+        velocity = new Vector2(xVelocity, velocity.y);
+    }
+
+    public void SetYVelocity(float yVelocity) {
+        velocity = new Vector2(velocity.x, yVelocity);
+    }
+
+    public void SetVelocity(Vector2 newVelocity) {
+        velocity = newVelocity;
     }
 
     public void SetPosition(Vector3 position) {
         transform.position = position;
     }
 
-    public void SetYVelocity(float yVelocity) {
-        velocity = new Vector2(velocity.x, yVelocity);
+    public void SetParameters(float newG = 0, Vector3 position = default(Vector3), float newX = 0, float newY = 0) {
+        SetGravity(newG);
+        SetPosition(position);
+        SetXVelocity(newX);
+        SetYVelocity(newY);
+    }
+
+    [Serializable]
+    private struct GeometryBodyEvents
+    {
+        public UnityEvent<Collider2D> OnOverlap;
     }
 }
