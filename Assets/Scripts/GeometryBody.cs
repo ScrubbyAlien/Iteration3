@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,6 +8,7 @@ using UnityEngine.Events;
 public class GeometryBody : MonoBehaviour
 {
     public event Action<Collider2D> OnCollide;
+    public event Action OnTouchGround;
 
     [SerializeField, Range(0, 0.3f)]
     private float maxDeltaTime;
@@ -17,16 +19,21 @@ public class GeometryBody : MonoBehaviour
     public float g => gravityConstant;
     private new BoxCollider2D collider;
     private Vector2 velocity;
+
+    [SerializeField]
+    private LayerMask floorLayers;
+    [SerializeField, Range(-1, 0)]
+    private float yGroundCheckOffset;
     
     [SerializeField]
     private GeometryBodyEvents events;
     [Serializable]
     private struct GeometryBodyEvents
     {
-        public UnityEvent<Collider2D> OnOverlap;
+        public UnityEvent<Collider2D> OnCollide;
     }
 
-    private bool ignoreCollision;
+    private bool checkGround;
 
     private Vector2 lastPosition;
     private Vector2 nextPosition;
@@ -44,55 +51,36 @@ public class GeometryBody : MonoBehaviour
 
         // Apply gravity
         SetYVelocity(velocity.y + g * deltaTime);
+        UpdatePosition();
         
-        // todo maybe check for 
-        if (!ignoreCollision) {
-            List<Collider2D> others = new();
-            if (collider.Overlap(others) > 0) others.ForEach(other => {
-                events.OnOverlap?.Invoke(other);
-                OnOverlap(other);
-            });
-        }
+        List<Collider2D> others = new();
+        if (collider.Overlap(others) > 0) others.ForEach(other => {
+            events.OnCollide?.Invoke(other);
+            OnCollide?.Invoke(other);
+        });
         
-        transform.position += (Vector3)velocity * deltaTime;
-
-        ignoreCollision = false;
+        if (velocity.y < 0) checkGround = false;
     }
 
-    // private void InterpolatePosition() {
-    //     nextPosition = transform.position + (Vector3)velocity * deltaTime;
-    //     
-    //     RaycastHit2D hit = Physics2D.Linecast(lastPosition, nextPosition);
-    //     if (nextPosition == lastPosition || !hit) {
-    //         transform.position = nextPosition;
-    //         lastPosition = transform.position;
-    //         return;
-    //     }
-    //     
-    //     Vector2 diff = nextPosition - lastPosition;
-    //     float h = collider.bounds.extents.y;
-    //     if (diff.x == 0) {
-    //         transform.position = hit.point + new Vector2(0, h);
-    //     }
-    //     else {
-    //         float slope = diff.y / diff.x;
-    //         transform.position = hit.point + new Vector2(slope / h, h);
-    //     }
-    //     
-    //     lastPosition = transform.position;
-    //     return;
-    // }
-    
-    private void OnOverlap(Collider2D other) {
-        ColliderDistance2D distance = collider.Distance(other);
-        Vector3 offset = distance.normal * distance.distance;
-        SetPosition(transform.position + offset);
-        SetYVelocity(0);
-        OnCollide?.Invoke(other);
+    private void UpdatePosition() {
+        Vector3 groundCheckPosition = transform.position + new Vector3(0, yGroundCheckOffset, 0);
+        ContactFilter2D filter = new ContactFilter2D() { layerMask = floorLayers};
+        List<Collider2D> results = new();
+        float nextY = transform.position.y + velocity.y * deltaTime;
+        float nextX = transform.position.x + velocity.x * deltaTime;
+        if (!checkGround && Physics2D.OverlapBox(groundCheckPosition, collider.bounds.size, 0, filter, results) > 0)  
+        {
+            Vector2 highestPoint = results.Select(c => c.ClosestPoint(transform.position)) // closest points
+                                          .Aggregate(((v1, v2) => v1.y > v2.y ? v1 : v2)); // find highest closest point
+            nextY =  highestPoint.y + collider.bounds.extents.y;
+            velocity.y = 0;
+            OnTouchGround?.Invoke();
+        }
+        SetPosition(new Vector3(nextX, nextY));
     }
 
     public void IgnoreCollisionsFor1Frame() {
-        ignoreCollision = true;
+        checkGround = true;
     }
     
     public void SetGravity(float newGravityConstant) {

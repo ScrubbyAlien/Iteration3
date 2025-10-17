@@ -134,7 +134,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.96, y: 0.96}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &8353102553880102564
 MonoBehaviour:
@@ -148,9 +148,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8341194b83940279906564d63978069, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityConstant: -0.3
+  maxDeltaTime: 0.02
+  gravityConstant: -10
+  floorLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  yGroundCheckOffset: -0.1
   events:
-    OnOverlap:
+    OnCollide:
       m_PersistentCalls:
         m_Calls: []
 --- !u!114 &2018527424284836835
@@ -165,8 +170,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3595d019bcaa489a8c037713d773fb28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 10
   jumpingParameters:
-    height: 2
-    timeUp: 0.3
-    timeDown: 0.2
+    height: 2.7
+    timeUp: 0.22
+    timeDown: 0.22
+  bufferTime: 0.3

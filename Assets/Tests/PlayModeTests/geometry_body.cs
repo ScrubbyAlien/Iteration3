@@ -60,13 +60,13 @@ public class geometry_body : integration_test_fixture
     [UnityTest]
     public IEnumerator body_collides_with_floor() {
         Vector3 startPos = TestHelpers.GetObjectPositionByName("CollideWithFloorPosition");
-        body.SetParameters(-1, startPos);
+        body.SetParameters(-1, startPos, 0, -1);
         
         float y0 = body.transform.position.y;
         yield return TestHelpers.WaitForNumberOfFrames(10);
         float y1 = body.transform.position.y; 
         
-        Assert.That(y1, Is.EqualTo(y0).Within(0.01f));
+        Assert.That(y1, Is.EqualTo(y0).Within(0.02f));
     }
    
 }

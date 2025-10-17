@@ -379,7 +379,7 @@ GameObject:
   - component: {fileID: 681404147}
   - component: {fileID: 681404146}
   - component: {fileID: 681404145}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -510,37 +510,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 14971461150958460, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: m_DefaultActionMap
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 14971461150958460, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: m_NotificationBehavior
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2018527424284836835, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: speed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2018527424284836835, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: jumpingParameters.height
-      value: 2.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2018527424284836835, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: jumpingParameters.timeUp
-      value: 0.23
-      objectReference: {fileID: 0}
-    - target: {fileID: 2018527424284836835, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: jumpingParameters.timeDown
-      value: 0.23
-      objectReference: {fileID: 0}
     - target: {fileID: 5918946826638840003, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -19.6
+      value: -19.35
       objectReference: {fileID: 0}
     - target: {fileID: 5918946826638840003, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.33
+      value: -2.04
       objectReference: {fileID: 0}
     - target: {fileID: 5918946826638840003, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -577,26 +553,6 @@ PrefabInstance:
     - target: {fileID: 6986016002017048445, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 8353102553880102564, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: speed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8353102553880102564, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: maxDeltaTime
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 8353102553880102564, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: gravityConstant
-      value: -20
-      objectReference: {fileID: 0}
-    - target: {fileID: 8353102553880102564, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: physicsParameters.speed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8353102553880102564, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: physicsParameters.gravityConstant
-      value: -0.02
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
