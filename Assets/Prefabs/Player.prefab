@@ -149,6 +149,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityConstant: -0.3
+  events:
+    OnOverlap:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!114 &2018527424284836835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,3 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2
+  jumpingParameters:
+    height: 2
+    timeUp: 0.3
+    timeDown: 0.2

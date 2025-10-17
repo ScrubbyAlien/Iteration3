@@ -6,24 +6,15 @@ using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 [TestFixture]
-public class geometry_body
+public class geometry_body : integration_test_fixture
 {
-    private string sceneName = "GeometryBodyTestScene";
-    private Scene scene = new Scene();
+    protected override string sceneName => "GeometryBodyTestScene";
     private GeometryBody body = null;
 
     [UnitySetUp]
-    private IEnumerator Setup() {
-        yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-        scene = SceneManager.GetSceneByName(sceneName);
-        SceneManager.SetActiveScene(scene);
+    protected override IEnumerator Setup() {
+        yield return base.Setup();
         body = Object.FindFirstObjectByType<GeometryBody>();
-        yield return null;
-    }
-
-    [UnityTearDown]
-    private IEnumerator TearDown() {
-        yield return SceneManager.UnloadSceneAsync(scene);
         yield return null;
     }
     
@@ -68,9 +59,7 @@ public class geometry_body
 
     [UnityTest]
     public IEnumerator body_collides_with_floor() {
-        Vector3 startPos = Object.FindObjectsByType<Transform>(FindObjectsSortMode.None)
-                                 .First(g => g.gameObject.name == "CollideWithFloorPosition")
-                                 .transform.position;
+        Vector3 startPos = TestHelpers.GetObjectPositionByName("CollideWithFloorPosition");
         body.SetParameters(-1, startPos);
         
         float y0 = body.transform.position.y;

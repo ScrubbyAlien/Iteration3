@@ -12,5 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/GeometryBodyTestScene.unity
     guid: 28a1db0a2b1d40c458899be5593385dd
   m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 5d78ff3e4d4984f4fa460ae3ddc2d0ce, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
