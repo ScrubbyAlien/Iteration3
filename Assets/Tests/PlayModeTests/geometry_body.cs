@@ -51,7 +51,7 @@ public class geometry_body : integration_test_fixture
 
     [UnityTest]
     public IEnumerator body_moves_right() {
-        body.SetParameters(-1, newX: 3);
+        body.SetParameters(-1, xVelocity: 3);
         
         float x0 = body.transform.position.x;
         SimulateUpdatesInDuration(body, 0.1f, 0.01f);
@@ -72,6 +72,18 @@ public class geometry_body : integration_test_fixture
         float y1 = body.transform.position.y; 
         
         Assert.That(y1, Is.EqualTo(y0));
+        yield return null;
+    }
+
+    [UnityTest]
+    public IEnumerator body_rotates_in_time() {
+        float angularVelocity = 100f;
+        float duration = 1.3f;
+
+        body.SetParameters(angularVelocity: angularVelocity);
+        SimulateUpdatesInDuration(body, duration, 0.01f);
+        
+        Assert.That(body.transform.rotation.eulerAngles.z, Is.EqualTo(duration * angularVelocity).Within(0.005f));
         yield return null;
     }
    

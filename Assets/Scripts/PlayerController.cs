@@ -10,77 +10,29 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float speed;
     private GeometryBody body;
-    
-    [SerializeField]
-    private JumpingParameters jumpingParameters;
-    public JumpingParameters jumpingParams => jumpingParameters;
 
-    private JumpingParameters.JumpValues values;
-
-    [SerializeField]
-    private float bufferTime;
-    private Coroutine buffer;
-    
-    private bool onGround;
-    public void ForceOnGround() => onGround = true;
+    [SerializeField, ExposeFields]
+    private ControlPattern controlPatternAsset;
+    public ControlPattern activeControlPattern { get; private set; }
     
     private void Awake() {
         body = GetComponent<GeometryBody>();
-        InputSystem.actions.FindAction("Player/Jump").performed += Jump;
-    }
-
-    private void Start() {
-        values = jumpingParameters.CalculateJumpValues();
-        body.SetGravity(values.gravity);
-        body.SetXVelocity(speed);
-        body.OnTouchGround += () => onGround = true;
-    }
-
-    public void Jump(InputAction.CallbackContext context) => Jump();
-    public void Jump() {
-        if (!onGround) {
-            if (buffer != null) StopCoroutine(buffer);
-            buffer = StartCoroutine(BufferJumpInput(bufferTime));
-            return;
-        }
-        body.IgnoreCollisionsFor1Frame();
-        onGround = false;
-        body.SetYVelocity(values.velocity);
-        body.SetGravity(values.gravity);
-    }
-
-    private IEnumerator BufferJumpInput(float buffer) {
-        float bufferEnd = Time.time + buffer;
-        while (Time.time < bufferEnd) {
-            if (onGround) {
-                Jump();
-                break;
-            }
-            yield return null;
-        }
+        InputSystem.actions.FindAction("Player/Action").performed += Performed;
+        InputSystem.actions.FindAction("Player/Action").canceled += Canceled;
+        
+        activeControlPattern = controlPatternAsset.Create();
+        activeControlPattern.ActivateControl(this, body, speed);
     }
     
-    public void SetJumpingParameters(JumpingParameters newParameters) {
-        jumpingParameters = newParameters;
-        values = jumpingParameters.CalculateJumpValues();
+    public void Performed(InputAction.CallbackContext context) => activeControlPattern.ActionPerformed(context, body);
+    public void Canceled(InputAction.CallbackContext context) => activeControlPattern.ActionCanceled(context, body);
+
+    public void ChangeControlPattern() {
+        
     }
     
     private void OnDrawGizmosSelected() {
-        values = jumpingParameters.CalculateJumpValues();
-        int segments = 20;
-        float totalTime = jumpingParameters.timeUp * 2;
-        
-        Vector2 p = transform.position;
-        Vector2[] vertices = new Vector2[segments];
-        for (int i = 0; i < segments; i++) {
-            float fraction = i / (segments - 1f);
-            float x = fraction * totalTime * speed;
-            float y = TestHelpers.CalculateDistance(values.velocity, values.gravity, fraction * totalTime);
-            vertices[i] = p + new Vector2(x, y);
-        }
-
-        for (int i = 0; i < segments - 1; i++) {
-            Gizmos.DrawLine(vertices[i], vertices[i + 1]);
-        }
+        if (!body) body = GetComponent<GeometryBody>();
+        controlPatternAsset?.SelectedGizmos(body);
     }
 }

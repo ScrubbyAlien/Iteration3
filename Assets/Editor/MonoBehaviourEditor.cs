@@ -1,5 +1,5 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(MonoBehaviour))]
+[CustomEditor(typeof(MonoBehaviour), true)]
 public class MonoBehaviourEditor : Editor { }

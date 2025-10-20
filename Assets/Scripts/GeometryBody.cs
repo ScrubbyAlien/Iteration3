@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class GeometryBody : MonoBehaviour, ITestable
 {
     public event Action<Collider2D> OnCollide;
-    public event Action OnTouchGround;
+    public event Action<GeometryBody> OnTouchGround;
 
     [SerializeField, Range(0, 0.3f)]
     private float maxDeltaTime;
@@ -19,7 +19,8 @@ public class GeometryBody : MonoBehaviour, ITestable
     public float g => gravityConstant;
     private new BoxCollider2D collider;
     private Vector2 velocity;
-
+    private float angularVelocity;
+    
     [SerializeField]
     private LayerMask floorLayers;
     [SerializeField, Range(-1, 0)]
@@ -56,6 +57,10 @@ public class GeometryBody : MonoBehaviour, ITestable
     public void UpdateWithDelta(float delta) {
         // Apply gravity
         SetYVelocity(velocity.y + g * delta);
+        
+        // Apply angularVelocity
+        SetRotation(transform.rotation.eulerAngles.z + angularVelocity * delta);
+        
         UpdatePosition(delta);
         
         List<Collider2D> others = new();
@@ -79,7 +84,7 @@ public class GeometryBody : MonoBehaviour, ITestable
                                           .Aggregate(((v1, v2) => v1.y > v2.y ? v1 : v2)); // find highest closest point
             nextY =  highestPoint.y + collider.bounds.extents.y;
             velocity.y = 0;
-            OnTouchGround?.Invoke();
+            OnTouchGround?.Invoke(this);
         }
         SetPosition(new Vector3(nextX, nextY));
     }
@@ -104,15 +109,31 @@ public class GeometryBody : MonoBehaviour, ITestable
     public void SetVelocity(Vector2 newVelocity) {
         velocity = newVelocity;
     }
+    public void SetAngularVelocity(float newAngularVelocity) {
+        angularVelocity = newAngularVelocity;
+    }
 
     public void SetPosition(Vector3 position) {
         transform.position = position;
     }
+    public void SetRotation(float newRotation) {
+        float canonRotation = newRotation % 360;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, canonRotation));
+    }
     
-    public void SetParameters(float newG = 0, Vector3 position = default(Vector3), float newX = 0, float newY = 0) {
-        SetGravity(newG);
+    public void SetParameters(
+        float g = 0, 
+        Vector3 position = default(Vector3), 
+        float rotation = 0,
+        float xVelocity = 0, 
+        float yVelocity = 0,
+        float angularVelocity = 0) 
+    {
+        SetGravity(g);
         SetPosition(position);
-        SetXVelocity(newX);
-        SetYVelocity(newY);
+        SetRotation(rotation);
+        SetXVelocity(xVelocity);
+        SetYVelocity(yVelocity);
+        SetAngularVelocity(angularVelocity);
     }
 }

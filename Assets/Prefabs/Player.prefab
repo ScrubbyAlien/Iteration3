@@ -171,8 +171,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
-  jumpingParameters:
-    height: 2.7
-    timeUp: 0.22
-    timeDown: 0.22
-  bufferTime: 0.3
+  controlPatternAsset: {fileID: 11400000, guid: 1ea912bda5e986945874eb432bc715e5, type: 2}
