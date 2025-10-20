@@ -59,7 +59,6 @@ public class StandardJumpPattern : ControlPattern
             buffer = StartCoroutine(BufferJumpInput(bufferTime, body));
             return;
         }
-        body.IgnoreCollisionsFor1Frame();
         onGround = false;
         float angularVelocity = -180f / (jumpingParameters.timeUp * 2);
         body.SetAngularVelocity(angularVelocity);
@@ -68,9 +67,11 @@ public class StandardJumpPattern : ControlPattern
     }
 
     private void OnTouchGround(GeometryBody body) {
+        if (!onGround) {
+            if (landing != null) StopCoroutine(landing);
+            landing = StartCoroutine(Land(landingSmoothingTime, body));
+        }
         onGround = true;
-        if (landing != null) StopCoroutine(landing);
-        landing = StartCoroutine(Land(landingSmoothingTime, body));
     }
     
     private IEnumerator BufferJumpInput(float buffer, GeometryBody body) {
@@ -85,17 +86,15 @@ public class StandardJumpPattern : ControlPattern
     }
 
     private IEnumerator Land(float smoothingTime, GeometryBody body) {
-        if (Mathf.Abs(body.transform.rotation.eulerAngles.z) < 0.01f) {
-            yield break;
-        }
         body.SetAngularVelocity(0f);
         float rot = body.transform.rotation.eulerAngles.z;
         float rotMod90 = rot % 90f;
-        float next90DegRotation = rot - rotMod90 + 90f;
+        float next90DegRotation = rot - rotMod90;
         float startTime = Time.time;
-        float stopTime = startTime + smoothingTime;
+        float partialRotationAdjustedSmoothingTime = smoothingTime * rotMod90 / 90;
+        float stopTime = startTime + partialRotationAdjustedSmoothingTime;
         while (Time.time < stopTime) {
-            float t = Mathf.Sqrt((Time.time - startTime) / smoothingTime);
+            float t = (Time.time - startTime) / partialRotationAdjustedSmoothingTime;
             body.SetRotation(Mathf.Lerp(rot, next90DegRotation, t));
             yield return null;
         }

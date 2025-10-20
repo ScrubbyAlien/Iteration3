@@ -34,6 +34,7 @@ public class GeometryBody : MonoBehaviour, ITestable
         public UnityEvent<Collider2D> OnCollide;
     }
 
+    public bool falling => velocity.y <= 0;
     private bool checkGround;
 
     private Vector2 lastPosition;
@@ -68,8 +69,9 @@ public class GeometryBody : MonoBehaviour, ITestable
             events.OnCollide?.Invoke(other);
             OnCollide?.Invoke(other);
         });
-        
-        if (velocity.y < 0) checkGround = false;
+
+        if (velocity.y <= 0) checkGround = true;
+        else checkGround = false;
     }
 
     private void UpdatePosition(float delta) {
@@ -78,7 +80,7 @@ public class GeometryBody : MonoBehaviour, ITestable
         List<Collider2D> results = new();
         float nextY = transform.position.y + velocity.y * delta;
         float nextX = transform.position.x + velocity.x * delta;
-        if (!checkGround && Physics2D.OverlapBox(groundCheckPosition, collider.bounds.size, 0, filter, results) > 0)  
+        if (checkGround && Physics2D.OverlapBox(groundCheckPosition, collider.bounds.size, 0, filter, results) > 0)  
         {
             Vector2 highestPoint = results.Select(c => c.ClosestPoint(transform.position)) // closest points
                                           .Aggregate(((v1, v2) => v1.y > v2.y ? v1 : v2)); // find highest closest point
@@ -87,10 +89,6 @@ public class GeometryBody : MonoBehaviour, ITestable
             OnTouchGround?.Invoke(this);
         }
         SetPosition(new Vector3(nextX, nextY));
-    }
-
-    public void IgnoreCollisionsFor1Frame() {
-        checkGround = true;
     }
     
     public void SetGravity(float newGravityConstant) {
@@ -103,6 +101,7 @@ public class GeometryBody : MonoBehaviour, ITestable
     }
 
     public void SetYVelocity(float yVelocity) {
+        if (yVelocity > 0) checkGround = false;
         velocity = new Vector2(velocity.x, yVelocity);
     }
 

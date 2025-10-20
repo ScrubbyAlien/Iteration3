@@ -27,8 +27,8 @@ public class PlayerController : MonoBehaviour
     public void Performed(InputAction.CallbackContext context) => activeControlPattern.ActionPerformed(context, body);
     public void Canceled(InputAction.CallbackContext context) => activeControlPattern.ActionCanceled(context, body);
 
-    public void ChangeControlPattern() {
-        
+    public void ChangeControlPattern(ControlPattern newPattern) {
+        // activeControlPattern.DeactivateControl(body);
     }
     
     private void OnDrawGizmosSelected() {
