@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,5 +23,18 @@ public abstract class integration_test_fixture
     protected IEnumerator TearDown() {
         yield return SceneManager.UnloadSceneAsync(scene);
         yield return null;
+    }
+    
+    protected static void SimulateUpdatesInDuration(
+        ITestable testable, 
+        float duration, 
+        float deltaTime, 
+        Action EveryUpdate = null) 
+    {
+        int numberOfUpdates = Mathf.RoundToInt(duration / deltaTime);
+        for (int i = 0; i < numberOfUpdates; i++) {
+            testable.UpdateWithDelta(deltaTime);
+            EveryUpdate?.Invoke();
+        }
     }
 }

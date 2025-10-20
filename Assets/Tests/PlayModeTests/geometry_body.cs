@@ -24,15 +24,16 @@ public class geometry_body : integration_test_fixture
         body.SetParameters(-1);
         float interval = 0.25f;
         
-        yield return new WaitForSeconds(interval);
+        SimulateUpdatesInDuration(body, interval, 0.01f);
         float expectedDistance1 = TestHelpers.CalculateDistance(0, -1, interval);
         float y1 = body.transform.position.y;
-        yield return new WaitForSeconds(interval);
+        SimulateUpdatesInDuration(body, interval, 0.01f);
         float expectedDistance2 = TestHelpers.CalculateDistance(0, -1, interval * 2);
         float y2 = body.transform.position.y;
         
-        Assert.That(y1, Is.EqualTo(expectedDistance1).Within(0.02f));
-        Assert.That(y2, Is.EqualTo(expectedDistance2).Within(0.02f));
+        Assert.That(y1, Is.EqualTo(expectedDistance1).Within(0.005f));
+        Assert.That(y2, Is.EqualTo(expectedDistance2).Within(0.005f));
+        yield return null;
     }
     
     [UnityTest]
@@ -40,10 +41,12 @@ public class geometry_body : integration_test_fixture
         body.SetParameters(-1);
         
         float y0 = body.transform.position.y;
-        yield return TestHelpers.WaitForNumberOfFrames(10);
+        SimulateUpdatesInDuration(body, 0.1f, 0.01f);
         float y1 = body.transform.position.y;
         
         Assert.That(y1, Is.LessThan(y0));
+
+        yield return null;
     }
 
     [UnityTest]
@@ -51,10 +54,11 @@ public class geometry_body : integration_test_fixture
         body.SetParameters(-1, newX: 3);
         
         float x0 = body.transform.position.x;
-        yield return TestHelpers.WaitForNumberOfFrames(10);
+        SimulateUpdatesInDuration(body, 0.1f, 0.01f);
         float x1 = body.transform.position.x;
         
         Assert.That(x1, Is.GreaterThan(x0));
+        yield return null;
     }
 
     [UnityTest]
@@ -62,11 +66,13 @@ public class geometry_body : integration_test_fixture
         Vector3 startPos = TestHelpers.GetObjectPositionByName("CollideWithFloorPosition");
         body.SetParameters(-1, startPos, 0, -1);
         
+        SimulateUpdatesInDuration(body, 0.1f, 0.01f);
         float y0 = body.transform.position.y;
-        yield return TestHelpers.WaitForNumberOfFrames(10);
+        SimulateUpdatesInDuration(body, 0.1f, 0.01f);
         float y1 = body.transform.position.y; 
         
-        Assert.That(y1, Is.EqualTo(y0).Within(0.02f));
+        Assert.That(y1, Is.EqualTo(y0));
+        yield return null;
     }
    
 }

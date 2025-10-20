@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start() {
         values = jumpingParameters.CalculateJumpValues();
-        body.SetGravity(values.gravityDown);
+        body.SetGravity(values.gravity);
         body.SetXVelocity(speed);
         body.OnTouchGround += () => onGround = true;
     }
@@ -46,8 +46,7 @@ public class PlayerController : MonoBehaviour
         body.IgnoreCollisionsFor1Frame();
         onGround = false;
         body.SetYVelocity(values.velocity);
-        body.SetGravity(values.gravityUp);
-        StartCoroutine(SetDownGravity(jumpingParameters.timeUp));
+        body.SetGravity(values.gravity);
     }
 
     private IEnumerator BufferJumpInput(float buffer) {
@@ -61,11 +60,6 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    private IEnumerator SetDownGravity(float delay) {
-        yield return new WaitForSeconds(delay);
-        body.SetGravity(values.gravityDown);
-    }
-    
     public void SetJumpingParameters(JumpingParameters newParameters) {
         jumpingParameters = newParameters;
         values = jumpingParameters.CalculateJumpValues();
@@ -74,24 +68,18 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmosSelected() {
         values = jumpingParameters.CalculateJumpValues();
         int segments = 20;
-        float totalTime = jumpingParameters.timeUp + jumpingParameters.timeDown;
-        float up = jumpingParameters.timeUp;
-        float down = jumpingParameters.timeDown;
+        float totalTime = jumpingParameters.timeUp * 2;
         
         Vector2 p = transform.position;
         Vector2[] vertices = new Vector2[segments];
         for (int i = 0; i < segments; i++) {
             float fraction = i / (segments - 1f);
             float x = fraction * totalTime * speed;
-            float y = TestHelpers.CalculateDistance(values.velocity, values.gravityUp, fraction * totalTime);
-            if (x > up * speed) {
-                y = jumpingParameters.height + TestHelpers.CalculateDistance(0, values.gravityDown, fraction * totalTime - up);
-            }
+            float y = TestHelpers.CalculateDistance(values.velocity, values.gravity, fraction * totalTime);
             vertices[i] = p + new Vector2(x, y);
         }
 
         for (int i = 0; i < segments - 1; i++) {
-            
             Gizmos.DrawLine(vertices[i], vertices[i + 1]);
         }
     }

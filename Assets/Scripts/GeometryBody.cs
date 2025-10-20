@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(BoxCollider2D))]
-public class GeometryBody : MonoBehaviour
+public class GeometryBody : MonoBehaviour, ITestable
 {
     public event Action<Collider2D> OnCollide;
     public event Action OnTouchGround;
@@ -49,9 +49,14 @@ public class GeometryBody : MonoBehaviour
         if (Physics2D.simulationMode != SimulationMode2D.Script) return;
         Physics2D.Simulate(deltaTime);
 
+        UpdateWithDelta(deltaTime);
+    }
+    
+    /// <inheritdoc />
+    public void UpdateWithDelta(float delta) {
         // Apply gravity
-        SetYVelocity(velocity.y + g * deltaTime);
-        UpdatePosition();
+        SetYVelocity(velocity.y + g * delta);
+        UpdatePosition(delta);
         
         List<Collider2D> others = new();
         if (collider.Overlap(others) > 0) others.ForEach(other => {
@@ -62,12 +67,12 @@ public class GeometryBody : MonoBehaviour
         if (velocity.y < 0) checkGround = false;
     }
 
-    private void UpdatePosition() {
+    private void UpdatePosition(float delta) {
         Vector3 groundCheckPosition = transform.position + new Vector3(0, yGroundCheckOffset, 0);
         ContactFilter2D filter = new ContactFilter2D() { layerMask = floorLayers};
         List<Collider2D> results = new();
-        float nextY = transform.position.y + velocity.y * deltaTime;
-        float nextX = transform.position.x + velocity.x * deltaTime;
+        float nextY = transform.position.y + velocity.y * delta;
+        float nextX = transform.position.x + velocity.x * delta;
         if (!checkGround && Physics2D.OverlapBox(groundCheckPosition, collider.bounds.size, 0, filter, results) > 0)  
         {
             Vector2 highestPoint = results.Select(c => c.ClosestPoint(transform.position)) // closest points

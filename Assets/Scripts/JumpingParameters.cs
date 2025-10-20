@@ -9,22 +9,18 @@ public struct JumpingParameters
     [Min(0)]
     public float height;
     public float heightx2 => height * 2f;
-    [Min(0.1f)]
+    [Min(0.01f)]
     public float timeUp;
     public float timeUpSqr => timeUp * timeUp;
-    [Min(0.1f)]
-    public float timeDown;
-    public float timeDownSqr => timeDown * timeDown;
     public static bool logErrors = true;
 
-    public JumpingParameters(float h, float tu, float td) {
+    public JumpingParameters(float h, float tu) {
         height = h;
         timeUp = tu;
-        timeDown = td;
     }
     
     public JumpValues CalculateJumpValues() {
-        if (timeUp == 0 || timeDown == 0) {
+        if (timeUp == 0) {
             if (logErrors) {
                 Debug.LogWarning("Jumping time is zero, aborting jumping calculations to avoid division by zero.");
             }
@@ -32,20 +28,17 @@ public struct JumpingParameters
         }
         float jumpVelocity = (heightx2) / timeUp;
         float upGravity = (-heightx2) / (timeUpSqr);
-        float downGravity = (-heightx2) / (timeDownSqr);
-        return new JumpValues(jumpVelocity, upGravity, downGravity);
+        return new JumpValues(jumpVelocity, upGravity);
     }
 
     public struct JumpValues
     {
         public float velocity;
-        public float gravityUp;
-        public float gravityDown;
+        public float gravity;
 
-        public JumpValues(float v = 0, float u = -1, float d = -1) {
+        public JumpValues(float v = 0, float u = -1) {
             velocity = v;
-            gravityUp = u;
-            gravityDown = d;
+            gravity = u;
         }
         
     }
