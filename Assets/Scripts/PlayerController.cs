@@ -33,6 +33,6 @@ public class PlayerController : MonoBehaviour
     
     private void OnDrawGizmosSelected() {
         if (!body) body = GetComponent<GeometryBody>();
-        controlPatternAsset?.SelectedGizmos(body);
+        controlPatternAsset?.SelectedGizmos(body, speed);
     }
 }

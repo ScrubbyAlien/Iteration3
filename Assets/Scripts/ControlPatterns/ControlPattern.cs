@@ -22,19 +22,22 @@ public abstract class ControlPattern : ScriptableObject
     }
     
     protected Coroutine StartCoroutine(IEnumerator routine) {
-        if (!mono)  {
-            Debug.LogWarning("Attempting to start coroutine while mono behaviour reference is null");
+        if (!mono || !mono.gameObject.activeInHierarchy)  {
+            Debug.LogWarning("Attempting to start coroutine while mono behaviour reference is null or game object is " +
+                             "inactive.");
             return null;
         }
         return mono.StartCoroutine(routine);
     }
-    protected void StopCoroutine(Coroutine coroutine) {
-        if (!mono)  {
-            Debug.LogWarning("Attempting to stop coroutine while mono behaviour reference is null");
+    protected void StopCoroutine(Coroutine coroutine, bool nullify = false) {
+        if (!mono || !mono.gameObject.activeInHierarchy)  {
+            Debug.LogWarning("Attempting to stop coroutine while mono behaviour reference is null or game object is " +
+                             "inactive.");
             return;
         }
         mono.StopCoroutine(coroutine);
+        if (nullify) coroutine = null;
     }
 
-    public virtual void SelectedGizmos(GeometryBody body) { }
+    public virtual void SelectedGizmos(GeometryBody body, float speed) { }
 }

@@ -15,5 +15,5 @@ MonoBehaviour:
   jumpingParameters:
     height: 2.3
     timeUp: 0.23
-  bufferTime: 0.3
-  landingSmoothingTime: 0.2
+  bufferTime: 0.1
+  landingSmoothingTime: 0.1

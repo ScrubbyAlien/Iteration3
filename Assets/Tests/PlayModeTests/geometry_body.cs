@@ -63,7 +63,7 @@ public class geometry_body : integration_test_fixture
 
     [UnityTest]
     public IEnumerator body_collides_with_floor() {
-        Vector3 startPos = TestHelpers.GetObjectPositionByName("CollideWithFloorPosition");
+        Vector3 startPos = GetObjectPositionByName("CollideWithFloorPosition");
         body.SetParameters(-1, startPos, 0, -1);
         
         SimulateUpdatesInDuration(body, 0.1f, 0.01f);

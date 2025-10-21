@@ -21,6 +21,7 @@ public class StandardJumpPattern : ControlPattern
     [SerializeField]
     private float landingSmoothingTime;
     private Coroutine landing;
+    private float fallingAngularVelocity => -180f / (jumpingParameters.timeUp * 2);
     
     private bool onGround;
     public void ForceOnGround() => onGround = true;
@@ -39,11 +40,13 @@ public class StandardJumpPattern : ControlPattern
         body.SetXVelocity(speed);
         this.speed = speed;
         body.OnTouchGround += OnTouchGround;
+        body.OnDrop += OnDrop;
     }
 
     protected override void OnDeactivated(GeometryBody body, float speed) {
         this.speed = 0;
         body.OnTouchGround -= OnTouchGround;
+        body.OnDrop -= OnDrop;
     }
 
     public override void ActionPerformed(InputAction.CallbackContext context, GeometryBody body) {
@@ -60,8 +63,8 @@ public class StandardJumpPattern : ControlPattern
             return;
         }
         onGround = false;
-        float angularVelocity = -180f / (jumpingParameters.timeUp * 2);
-        body.SetAngularVelocity(angularVelocity);
+        body.SetAngularVelocity(fallingAngularVelocity);
+        body.SetRotation(Nearest90Deg(body));
         body.SetYVelocity(values.velocity);
         body.SetGravity(values.gravity);
     }
@@ -73,11 +76,19 @@ public class StandardJumpPattern : ControlPattern
         }
         onGround = true;
     }
+
+    private void OnDrop(GeometryBody body) {
+        if (onGround) {
+            body.SetAngularVelocity(fallingAngularVelocity);
+            onGround = false;
+        }
+    }
     
     private IEnumerator BufferJumpInput(float buffer, GeometryBody body) {
         float bufferEnd = Time.time + buffer;
         while (Time.time < bufferEnd) {
             if (onGround) {
+                if (landing != null) StopCoroutine(landing, true);
                 Jump(body);
                 break;
             }
@@ -87,26 +98,37 @@ public class StandardJumpPattern : ControlPattern
 
     private IEnumerator Land(float smoothingTime, GeometryBody body) {
         body.SetAngularVelocity(0f);
-        float rot = body.transform.rotation.eulerAngles.z;
-        float rotMod90 = rot % 90f;
-        float next90DegRotation = rot - rotMod90;
+        float originalRotation = body.rotation;
+        float nearest90Deg = Nearest90Deg(body);
+        float rotDiff = originalRotation - nearest90Deg;
         float startTime = Time.time;
-        float partialRotationAdjustedSmoothingTime = smoothingTime * rotMod90 / 90;
-        float stopTime = startTime + partialRotationAdjustedSmoothingTime;
+        float stopTime = startTime + (smoothingTime * rotDiff / 90f);
         while (Time.time < stopTime) {
-            float t = (Time.time - startTime) / partialRotationAdjustedSmoothingTime;
-            body.SetRotation(Mathf.Lerp(rot, next90DegRotation, t));
+            float t = (Time.time - startTime) / (smoothingTime * rotDiff / 90);
+            body.SetRotation(Mathf.Lerp(originalRotation, nearest90Deg, t));
             yield return null;
         }
-        body.SetRotation(next90DegRotation);
+        body.SetRotation(nearest90Deg);
+    }
+
+    private float Next90Deg(GeometryBody body) {
+        float rotMod90 = body.rotation % 90f;
+        float next90DegRotation = body.rotation - rotMod90;
+        return next90DegRotation;
     }
     
+    private float Nearest90Deg(GeometryBody body) {
+        float rotMod90 = body.rotation % 90f;
+        float nearest = rotMod90 < 45f ? body.rotation - rotMod90 : body.rotation - rotMod90 + 90f;
+        return nearest;
+    }
+
     public void SetJumpingParameters(JumpingParameters newParameters) {
         jumpingParameters = newParameters;
         values = jumpingParameters.CalculateJumpValues();
     }
 
-    public override void SelectedGizmos(GeometryBody body) {
+    public override void SelectedGizmos(GeometryBody body, float speed) {
         values = jumpingParameters.CalculateJumpValues();
         int segments = 20;
         float totalTime = jumpingParameters.timeUp * 2;
