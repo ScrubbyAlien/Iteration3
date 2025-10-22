@@ -22,6 +22,7 @@ public class GeometryBody : MonoBehaviour, ITestable
     private new BoxCollider2D collider;
     private SpriteRenderer sprite;
     private Vector2 velocity;
+    public Vector2 linearVelocity => velocity;
     private float angularVelocity;
     public float rotation => sprite.transform.rotation.eulerAngles.z;
     
@@ -148,6 +149,12 @@ public class GeometryBody : MonoBehaviour, ITestable
 
     public void SetPosition(Vector3 position) {
         transform.position = position;
+    }
+    public void SetXPosition(float x) {
+        SetPosition(new Vector3(x, transform.position.y));
+    }
+    public void SetYPosition(float y) {
+        SetPosition(new Vector3(transform.position.x, y));
     }
     public void SetRotation(float newRotation) {
         float canonRotation = newRotation % 360;

@@ -33,7 +33,12 @@ public class BouncePad : MonoBehaviour, ITestable
 
     public void UpdateWithDelta(float delta) {
         if (PlayerInCollider(out GeometryBody body)) {
-            body.Jump(parameters);
+            float diff = transform.position.x - body.transform.position.x;
+            JumpingParameters diffAdjustedParameters = new JumpingParameters() {
+                height = parameters.height,
+                timeUp = parameters.timeUp + 0.5f * diff / body.linearVelocity.x
+            };
+            body.Jump(diffAdjustedParameters);
             enabled = false;
         }
     }

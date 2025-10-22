@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: StandardJumpPattern
   m_EditorClassIdentifier: 
   jumpingParameters:
-    height: 2.3
-    timeUp: 0.23
+    height: 3
+    timeUp: 0.25
   bufferTime: 0.1
   landingSmoothingTime: 0.1

@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(GeometryBody))]
 public class CollisionHandler : MonoBehaviour
 {
+    [SerializeField]
+    private ParticleSystem explosion;
+    
     public event Action OnDie;
     private GeometryBody body;
 
@@ -11,13 +14,11 @@ public class CollisionHandler : MonoBehaviour
     private void Awake() {
         body = GetComponent<GeometryBody>();
         body.OnCollide += OnCollide;
-        OnDie += () => Debug.Log("Die");
-        
     }
 
     private void OnCollide(Collider2D other) {
-        // todo explode or smth
         gameObject.SetActive(false);
+        Instantiate(explosion, transform.position, Quaternion.identity);
         OnDie?.Invoke();
     }
 }

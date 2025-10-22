@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ public class FollowObject : MonoBehaviour
     [SerializeField]
     private Transform follow;
 
+    [SerializeField]
+    private UpdateMethod updateMethod;
     [SerializeField]
     private FollowBehaviour behaviour;
 
@@ -49,7 +52,17 @@ public class FollowObject : MonoBehaviour
         if (maxY < minY) maxY = minY;
     }
 
+    private void Update() {
+        if (updateMethod != UpdateMethod.Update) return;
+        UpdatePosition();
+    }
+
     private void LateUpdate() {
+        if (updateMethod != UpdateMethod.LateUpdate) return;
+        UpdatePosition();
+    }
+
+    private void UpdatePosition() {
         if (!follow) return;
 
         targetPosition = GetTargetPosition();
@@ -109,5 +122,11 @@ public class FollowObject : MonoBehaviour
         Normal = 0,
         Dampened = 1,
         Parallax = 2
+    }
+
+    private enum UpdateMethod
+    {
+        Update,
+        LateUpdate
     }
 }

@@ -8,6 +8,7 @@ public class FollowObjectEditor : Editor
 
     private SerializedProperty follow;
     private SerializedProperty behaviour;
+    private SerializedProperty updateMethod;
     private SerializedProperty dampening;
     private SerializedProperty parallax;
     private SerializedProperty x, y;
@@ -18,6 +19,7 @@ public class FollowObjectEditor : Editor
         fo = target as FollowObject;
         follow = serializedObject.FindProperty("follow");
         behaviour = serializedObject.FindProperty("behaviour");
+        updateMethod = serializedObject.FindProperty("updateMethod");
         dampening = serializedObject.FindProperty("dampening");
         parallax = serializedObject.FindProperty("parallax");
         x = serializedObject.FindProperty("x");
@@ -31,6 +33,7 @@ public class FollowObjectEditor : Editor
     /// <inheritdoc />
     public override void OnInspectorGUI() {
         EditorGUILayout.PropertyField(follow);
+        EditorGUILayout.PropertyField(updateMethod);
         EditorGUILayout.PropertyField(behaviour);
         if (behaviour.enumValueIndex == 1) EditorGUILayout.PropertyField(dampening);
         if (behaviour.enumValueIndex == 2) EditorGUILayout.PropertyField(parallax);
