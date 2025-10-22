@@ -83,7 +83,7 @@ public class geometry_body : integration_test_fixture
         body.SetParameters(angularVelocity: angularVelocity);
         SimulateUpdatesInDuration(body, duration, 0.01f);
         
-        Assert.That(body.transform.rotation.eulerAngles.z, Is.EqualTo(duration * angularVelocity).Within(0.005f));
+        Assert.That(body.rotation, Is.EqualTo(duration * angularVelocity).Within(0.005f));
         yield return null;
     }
    

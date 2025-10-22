@@ -5,10 +5,12 @@ using UnityEngine;
 public struct JumpingParameters
 {
     // https://www.youtube.com/watch?v=IOe1aGY6hXA&list=PLGKTwK4yOQ_dpXp3FCPumQAwf-6fjERKe
-        
+
+    // public const float FloatPointErrorCompensator = 1.000846f;
+    
     [Min(0)]
     public float height;
-    public float heightx2 => height * 2f;
+    public float heightx2 => height * 2;
     [Min(0.01f)]
     public float timeUp;
     public float timeUpSqr => timeUp * timeUp;

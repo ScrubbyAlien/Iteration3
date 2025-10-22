@@ -10,7 +10,8 @@ public class GeometryBody : MonoBehaviour, ITestable
     public event Action<Collider2D> OnCollide;
     public event Action<GeometryBody> OnTouchGround;
     public event Action<GeometryBody> OnDrop;
-
+    public event Action<GeometryBody, JumpingParameters> OnJump;
+    
     [SerializeField, Range(0, 0.3f)]
     private float maxDeltaTime;
     private float deltaTime => Mathf.Min(Time.deltaTime, maxDeltaTime);
@@ -59,8 +60,8 @@ public class GeometryBody : MonoBehaviour, ITestable
 
         UpdateWithDelta(deltaTime);
     }
-    
-    /// <inheritdoc />
+
+    public bool enabledForTesting => enabled;
     public void UpdateWithDelta(float delta) {
         SetYVelocity(velocity.y + g * delta); // Apply gravity
         SetRotation(sprite.transform.rotation.eulerAngles.z + angularVelocity * delta); // Apply angularVelocity
@@ -112,12 +113,25 @@ public class GeometryBody : MonoBehaviour, ITestable
         }
     }
 
+    public void Jump(JumpingParameters parameters) {
+        JumpingParameters.JumpValues values = parameters.CalculateJumpValues();
+        SetRotation(Nearest90Deg());
+        SetYVelocity(values.velocity);
+        SetGravity(values.gravity);
+        OnJump?.Invoke(this, parameters);
+    }
+    
+    public float Nearest90Deg() {
+        float rotMod90 = rotation % 90f;
+        float nearest = rotMod90 < 45f ? rotation - rotMod90 : rotation - rotMod90 + 90f;
+        return nearest;
+    }
     
     public void SetGravity(float newGravityConstant) {
         gravityConstant = newGravityConstant;
     }
     public void ResetGravity() => gravityConstant = baseG;
-    
+
     public void SetXVelocity(float xVelocity) {
         velocity = new Vector2(xVelocity, velocity.y);
     }

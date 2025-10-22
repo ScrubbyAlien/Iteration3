@@ -31,12 +31,71 @@ public abstract class integration_test_fixture
         ITestable testable, 
         float duration, 
         float deltaTime, 
-        Action EveryUpdate = null) 
+        bool simulatePhysics = false,
+        Action everyUpdate = null
+    ) 
     {
         int numberOfUpdates = Mathf.RoundToInt(duration / deltaTime);
         for (int i = 0; i < numberOfUpdates; i++) {
-            testable.UpdateWithDelta(deltaTime);
-            EveryUpdate?.Invoke();
+            if (simulatePhysics) Physics2D.Simulate(deltaTime);
+            UpdateTestable(testable, deltaTime);
+            everyUpdate?.Invoke();
+        }
+    }
+    
+    protected static void SimulateUpdatesInDuration(
+        ITestable[] testables, 
+        float duration, 
+        float deltaTime, 
+        bool simulatePhysics = false,
+        Action everyUpdate = null
+    ) 
+    {
+        int numberOfUpdates = Mathf.RoundToInt(duration / deltaTime);
+        for (int i = 0; i < numberOfUpdates; i++) {
+            if (simulatePhysics) Physics2D.Simulate(deltaTime);
+            UpdateTestables(testables, deltaTime);
+            everyUpdate?.Invoke();
+        }
+    }
+    
+    protected static void SimulateUpdatesWhile(
+        ITestable testable, 
+        float deltaTime, 
+        Predicate<ITestable> predicate,
+        bool simulatePhysics = false,
+        uint maximumIterations = 1000
+    ) {
+        uint iterations = 0;
+        while (predicate(testable) && iterations < maximumIterations) {
+            if (simulatePhysics) Physics2D.Simulate(deltaTime);
+            UpdateTestable(testable, deltaTime);
+            iterations++;
+        }
+    }
+    
+    protected static void SimulateUpdatesWhile(
+        ITestable[] testables, 
+        float deltaTime,
+        Predicate<ITestable[]> predicate,
+        bool simulatePhysics = false,
+        uint maximumIterations = 1000
+    ) {
+        uint iterations = 0;
+        while (predicate(testables) && iterations < maximumIterations) {
+            if (simulatePhysics) Physics2D.Simulate(deltaTime);
+            UpdateTestables(testables, deltaTime);
+            iterations++;
+        }
+    }
+
+    private static void UpdateTestable(ITestable testable, float deltaTime) {
+        if (testable.enabledForTesting) testable.UpdateWithDelta(deltaTime);
+    }
+
+    private static void UpdateTestables(ITestable[] testables, float deltaTime) {
+        foreach (ITestable testable in testables) {
+            UpdateTestable(testable, deltaTime);
         }
     }
     

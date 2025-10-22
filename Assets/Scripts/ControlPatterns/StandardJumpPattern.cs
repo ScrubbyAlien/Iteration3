@@ -21,8 +21,7 @@ public class StandardJumpPattern : ControlPattern
     [SerializeField]
     private float landingSmoothingTime;
     private Coroutine landing;
-    private float fallingAngularVelocity => -180f / (jumpingParameters.timeUp * 2);
-    
+
     private bool onGround;
     public void ForceOnGround() => onGround = true;
 
@@ -41,6 +40,7 @@ public class StandardJumpPattern : ControlPattern
         this.speed = speed;
         body.OnTouchGround += OnTouchGround;
         body.OnDrop += OnDrop;
+        body.OnJump += RotateOnJump;
     }
 
     protected override void OnDeactivated(GeometryBody body, float speed) {
@@ -63,10 +63,15 @@ public class StandardJumpPattern : ControlPattern
             return;
         }
         onGround = false;
-        body.SetAngularVelocity(fallingAngularVelocity);
-        body.SetRotation(Nearest90Deg(body));
-        body.SetYVelocity(values.velocity);
-        body.SetGravity(values.gravity);
+        body.Jump(jumpingParameters);
+    }
+
+    private void RotateOnJump(GeometryBody body, JumpingParameters parameters) {
+        body.SetAngularVelocity(FallingAngularVelocity(parameters));
+    }
+    
+    private float FallingAngularVelocity(JumpingParameters parameters) {
+        return -180f / (parameters.timeUp * 2);
     }
 
     private void OnTouchGround(GeometryBody body) {
@@ -79,9 +84,9 @@ public class StandardJumpPattern : ControlPattern
 
     private void OnDrop(GeometryBody body) {
         if (onGround) {
-            body.SetAngularVelocity(fallingAngularVelocity);
-            onGround = false;
+            body.SetAngularVelocity(FallingAngularVelocity(jumpingParameters));
         }
+        onGround = false;
     }
     
     private IEnumerator BufferJumpInput(float buffer, GeometryBody body) {
@@ -99,7 +104,7 @@ public class StandardJumpPattern : ControlPattern
     private IEnumerator Land(float smoothingTime, GeometryBody body) {
         body.SetAngularVelocity(0f);
         float originalRotation = body.rotation;
-        float nearest90Deg = Nearest90Deg(body);
+        float nearest90Deg = body.Nearest90Deg();
         float rotDiff = originalRotation - nearest90Deg;
         float startTime = Time.time;
         float stopTime = startTime + (smoothingTime * rotDiff / 90f);
@@ -115,12 +120,6 @@ public class StandardJumpPattern : ControlPattern
         float rotMod90 = body.rotation % 90f;
         float next90DegRotation = body.rotation - rotMod90;
         return next90DegRotation;
-    }
-    
-    private float Nearest90Deg(GeometryBody body) {
-        float rotMod90 = body.rotation % 90f;
-        float nearest = rotMod90 < 45f ? body.rotation - rotMod90 : body.rotation - rotMod90 + 90f;
-        return nearest;
     }
 
     public void SetJumpingParameters(JumpingParameters newParameters) {
