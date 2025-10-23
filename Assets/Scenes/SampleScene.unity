@@ -1418,17 +1418,29 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 783000316685341600, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
+      propertyPath: m_PreviewTimeScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 783000316685341600, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 783000316685341600, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[1].value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1892537192140509889, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5918946826638840003, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -23
+      value: -17
       objectReference: {fileID: 0}
     - target: {fileID: 5918946826638840003, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.5
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 5918946826638840003, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1461,10 +1473,6 @@ PrefabInstance:
     - target: {fileID: 6986016002017048445, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 8353102553880102564, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
-      propertyPath: gravityConstant
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

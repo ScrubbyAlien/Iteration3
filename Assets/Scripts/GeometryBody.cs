@@ -95,23 +95,25 @@ public class GeometryBody : MonoBehaviour, ITestable
     }
     
     private void CheckCollisions() {
-        Vector3 forwardCheckPos = transform.position + Vector3.right * collisionCheckOffset;
-        Vector3 upwardCheckPos = transform.position + Vector3.up * collisionCheckOffset;
-        Vector3 downwardCheckPos = transform.position + Vector3.down * collisionCheckOffset;
+        Vector2 hazardCheckSize = new Vector2(collisionCheckOffset, collisionCheckOffset);
+        Vector3 sideWallCheckPos = transform.position + Vector3.right * collisionCheckOffset;
         
-        LayerMask hazardAndFloor = hazardLayers | floorLayers; // merge hazard and floor layers with bitwise or
-        Vector2 checkRightSize = collider.size + new Vector2(0, yGroundCheckOffset * 2); // account for ground check
+        // Check hazards
+        if (OverlapBox(transform.position, hazardCheckSize, hazardLayers, out List<Collider2D> resultsForward)) {
+            resultsForward.ForEach(result => OnCollide?.Invoke(result));
+        }
         
-        // make sure colliding with floor object from the side (not from above) triggers OnCollide
-        if (OverlapBox(forwardCheckPos, checkRightSize, hazardAndFloor, out List<Collider2D> resultsForward)) {
-            resultsForward.ForEach(result => OnCollide?.Invoke(result)); 
+        // Check if colliding with wall from side
+        if (OverlapBox(sideWallCheckPos, collider.size, floorLayers, out List<Collider2D> results)) {
+            results.ForEach(result => {
+                Vector3 closest = result.ClosestPoint(transform.position);
+                Vector2 toClosest = ((Vector2)(closest - transform.position)).normalized;
+                if (Vector2.Angle(Vector2.right, toClosest) < 45f) { // check if the collision happened to the right of the player
+                    OnCollide?.Invoke(result);
+                }
+            });
         }
-        if (OverlapBox(upwardCheckPos, collider.size, hazardLayers, out List<Collider2D> resultsUp)) {
-            resultsUp.ForEach(result => OnCollide?.Invoke(result));
-        }
-        if (OverlapBox(downwardCheckPos, collider.size, hazardLayers, out List<Collider2D> resultsDown)) {
-            resultsDown.ForEach(result => OnCollide?.Invoke(result));
-        }
+        
     }
 
     public void Jump(JumpingParameters parameters) {
