@@ -24,6 +24,7 @@ public class StandardJumpPattern : ControlPattern
 
     private bool onGround;
     public void ForceOnGround() => onGround = true;
+    public void ForceNotOnGround() => onGround = false;
 
     public override ControlPattern Create() {
         StandardJumpPattern pattern = ScriptableObject.CreateInstance<StandardJumpPattern>();

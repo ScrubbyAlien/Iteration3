@@ -8,15 +8,14 @@ public class BouncePad : MonoBehaviour, ITestable
     public bool enabledForTesting => enabled;
     private new BoxCollider2D collider;
 
-    [SerializeField, Tooltip("Speed value used to calculate gizmos, does not represent actual player speed")]
-    private float displaySpeed;
-    
+   
     [SerializeField]
     private JumpingParameters parameters;
     public JumpingParameters jumpingParameters => parameters;
     private JumpingParameters.JumpValues values;
     
-    //todo extract rotation logic into seperate class, or maybe event somehow?
+    [SerializeField, Tooltip("Speed value used to calculate gizmos, does not represent actual player speed")]
+    private float displaySpeed;
     
     private void Awake() {
         collider = GetComponent<BoxCollider2D>();
