@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 [CreateAssetMenu(fileName = "NewStandardJumpPattern", menuName = "Control Patterns/Standard Jump")]
 public class StandardJumpPattern : ControlPattern
 {
+    public override ModeManager.Modes mode => ModeManager.Modes.Standard;
+    
     private float speed;
     
     [SerializeField]
@@ -34,7 +36,7 @@ public class StandardJumpPattern : ControlPattern
         return pattern;
     }
     
-    protected override void OnActivated(GeometryBody body, float speed) {
+    protected override void OnActivated(IGeometryBody body, float speed) {
         values = jumpingParameters.CalculateJumpValues();
         body.SetGravity(values.gravity);
         body.SetXVelocity(speed);
@@ -45,20 +47,20 @@ public class StandardJumpPattern : ControlPattern
         body.OnJump += RotateOnJump;
     }
 
-    protected override void OnDeactivated(GeometryBody body, float speed) {
+    protected override void OnDeactivated(IGeometryBody body, float speed) {
         this.speed = 0;
         body.OnTouchGround -= OnTouchGround;
         body.OnDrop -= OnDrop;
     }
 
-    public override void ActionPerformed(InputAction.CallbackContext context, GeometryBody body) {
+    public override void ActionPerformed(InputAction.CallbackContext context, IGeometryBody body) {
         Jump(body);
     }
-    public override void ActionCanceled(InputAction.CallbackContext context, GeometryBody body) {
+    public override void ActionCanceled(InputAction.CallbackContext context, IGeometryBody body) {
         
     }
     
-    public void Jump(GeometryBody body) {
+    public void Jump(IGeometryBody body) {
         if (!onGround) {
             if (buffer != null) StopCoroutine(buffer);
             buffer = StartCoroutine(BufferJumpInput(bufferTime, body));
@@ -68,7 +70,7 @@ public class StandardJumpPattern : ControlPattern
         body.Jump(jumpingParameters);
     }
 
-    private void RotateOnJump(GeometryBody body, JumpingParameters parameters) {
+    private void RotateOnJump(IGeometryBody body, JumpingParameters parameters) {
         body.SetAngularVelocity(FallingAngularVelocity(parameters));
     }
     
@@ -76,7 +78,7 @@ public class StandardJumpPattern : ControlPattern
         return -180f / (parameters.timeUp * 2);
     }
 
-    private void OnTouchGround(GeometryBody body) {
+    private void OnTouchGround(IGeometryBody body) {
         if (!onGround) {
             if (landing != null) StopCoroutine(landing);
             landing = StartCoroutine(Land(landingSmoothingTime, body));
@@ -84,18 +86,18 @@ public class StandardJumpPattern : ControlPattern
         onGround = true;
     }
 
-    private void OnBump(GeometryBody body) {
+    private void OnBump(IGeometryBody body) {
         body.SetRotation(Next90Deg(body));
     }
     
-    private void OnDrop(GeometryBody body) {
+    private void OnDrop(IGeometryBody body) {
         if (onGround) {
             body.SetAngularVelocity(FallingAngularVelocity(jumpingParameters));
         }
         onGround = false;
     }
     
-    private IEnumerator BufferJumpInput(float buffer, GeometryBody body) {
+    private IEnumerator BufferJumpInput(float buffer, IGeometryBody body) {
         float bufferEnd = Time.time + buffer;
         while (Time.time < bufferEnd) {
             if (onGround) {
@@ -107,7 +109,7 @@ public class StandardJumpPattern : ControlPattern
         }
     }
 
-    private IEnumerator Land(float smoothingTime, GeometryBody body) {
+    private IEnumerator Land(float smoothingTime, IGeometryBody body) {
         body.SetAngularVelocity(0f);
         float originalRotation = body.rotation;
         float nearest90Deg = body.Nearest90Deg();
@@ -122,7 +124,7 @@ public class StandardJumpPattern : ControlPattern
         body.SetRotation(nearest90Deg);
     }
 
-    private float Next90Deg(GeometryBody body) {
+    private float Next90Deg(IGeometryBody body) {
         float rotMod90 = body.rotation % 90f;
         float next90DegRotation = body.rotation - rotMod90;
         return next90DegRotation;
@@ -133,12 +135,12 @@ public class StandardJumpPattern : ControlPattern
         values = jumpingParameters.CalculateJumpValues();
     }
 
-    public override void SelectedGizmos(GeometryBody body, float speed) {
+    public override void SelectedGizmos(IGeometryBody body, float speed) {
         values = jumpingParameters.CalculateJumpValues();
         int segments = 20;
         float totalTime = jumpingParameters.timeUp * 2;
         
-        Vector2 p = body.transform.position;
+        Vector2 p = body.position;
         Vector2[] vertices = new Vector2[segments];
         for (int i = 0; i < segments; i++) {
             float fraction = i / (segments - 1f);

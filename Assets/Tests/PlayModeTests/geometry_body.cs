@@ -9,7 +9,7 @@ using UnityEngine.TestTools;
 public class geometry_body : integration_test_fixture
 {
     protected override string sceneName => "GeometryBodyTestScene";
-    private GeometryBody body = null;
+    private IGeometryBody body = null;
 
     [UnitySetUp]
     protected override IEnumerator Setup() {
@@ -26,10 +26,10 @@ public class geometry_body : integration_test_fixture
         
         SimulateUpdatesInDuration(body, interval, 0.01f);
         float expectedDistance1 = TestHelpers.CalculateDistance(0, -1, interval);
-        float y1 = body.transform.position.y;
+        float y1 = body.position.y;
         SimulateUpdatesInDuration(body, interval, 0.01f);
         float expectedDistance2 = TestHelpers.CalculateDistance(0, -1, interval * 2);
-        float y2 = body.transform.position.y;
+        float y2 = body.position.y;
         
         Assert.That(y1, Is.EqualTo(expectedDistance1).Within(0.005f));
         Assert.That(y2, Is.EqualTo(expectedDistance2).Within(0.005f));
@@ -40,9 +40,9 @@ public class geometry_body : integration_test_fixture
     public IEnumerator body_is_obeying_gravity() {
         body.SetParameters(-1);
         
-        float y0 = body.transform.position.y;
+        float y0 = body.position.y;
         SimulateUpdatesInDuration(body, 0.1f, 0.01f);
-        float y1 = body.transform.position.y;
+        float y1 = body.position.y;
         
         Assert.That(y1, Is.LessThan(y0));
 
@@ -53,9 +53,9 @@ public class geometry_body : integration_test_fixture
     public IEnumerator body_moves_right() {
         body.SetParameters(-1, xVelocity: 3);
         
-        float x0 = body.transform.position.x;
+        float x0 = body.position.x;
         SimulateUpdatesInDuration(body, 0.1f, 0.01f);
-        float x1 = body.transform.position.x;
+        float x1 = body.position.x;
         
         Assert.That(x1, Is.GreaterThan(x0));
         yield return null;
@@ -67,9 +67,9 @@ public class geometry_body : integration_test_fixture
         body.SetParameters(-1, startPos, 0, -1);
         
         SimulateUpdatesInDuration(body, 0.1f, 0.01f);
-        float y0 = body.transform.position.y;
+        float y0 = body.position.y;
         SimulateUpdatesInDuration(body, 0.1f, 0.01f);
-        float y1 = body.transform.position.y; 
+        float y1 = body.position.y; 
         
         Assert.That(y1, Is.EqualTo(y0));
         yield return null;
@@ -81,9 +81,9 @@ public class geometry_body : integration_test_fixture
         body.SetParameters(position: startPos, yVelocity: 10);
         
         SimulateUpdatesInDuration(body, 0.1f, 0.01f);
-        float y0 = body.transform.position.y;
+        float y0 = body.position.y;
         SimulateUpdatesInDuration(body, 0.1f, 0.01f);
-        float y1 = body.transform.position.y; 
+        float y1 = body.position.y; 
         
         Assert.That(y1, Is.EqualTo(y0));
         yield return null;

@@ -8,7 +8,7 @@ public class CollisionHandler : MonoBehaviour
     private ParticleSystem explosion;
     
     public event Action OnDie;
-    private GeometryBody body;
+    private IGeometryBody body;
 
 
     private void Awake() {

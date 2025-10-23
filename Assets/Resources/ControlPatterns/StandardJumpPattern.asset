@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6075c07baae544328054cd6aa4903655, type: 3}
+  m_Name: StandardJumpPattern
+  m_EditorClassIdentifier: 
+  sprite: {fileID: -1596157972, guid: 24a132b6cd5958744b19f11a3bd2d509, type: 3}
+  jumpingParameters:
+    height: 3
+    timeUp: 0.25
+  bufferTime: 0.1
+  landingSmoothingTime: 0.1

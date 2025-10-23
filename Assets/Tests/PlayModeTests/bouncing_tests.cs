@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 public class bouncing_tests : integration_test_fixture
 {
     protected override string sceneName => "BouncingTestScene";
-    private GeometryBody body;
+    private IGeometryBody body;
 
     protected override IEnumerator Setup() {
         yield return base.Setup();
@@ -26,7 +26,7 @@ public class bouncing_tests : integration_test_fixture
         
         SimulateUpdatesWhile(testables, 0.01f, notBounced, true);
         SimulateUpdatesInDuration(testables, bouncePad.jumpingParameters.timeUp, 0.01f);
-        float endY = body.transform.position.y;
+        float endY = body.position.y;
         
         Assert.That(endY - startPos.y, Is.EqualTo(bouncePad.jumpingParameters.height).Within(0.05f));
         yield return null;
@@ -43,7 +43,7 @@ public class bouncing_tests : integration_test_fixture
         bounceBall.TriggerOnActionNextFrame();
         SimulateUpdatesWhile(testables, 0.01f, notBounced, true);
         SimulateUpdatesInDuration(testables, bounceBall.jumpingParameters.timeUp, 0.01f);
-        float endY = body.transform.position.y;
+        float endY = body.position.y;
         
         Assert.That(endY - startPos.y, Is.EqualTo(bounceBall.jumpingParameters.height).Within(0.05f));
         yield return null;

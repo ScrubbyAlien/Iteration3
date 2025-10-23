@@ -9,7 +9,7 @@ public class collision_handler : integration_test_fixture
 {
     protected override string sceneName => "CollisionHandlingTestScene";
     private CollisionHandler collisionHandler;
-    private GeometryBody body;
+    private IGeometryBody body;
     
     protected override IEnumerator Setup() {
         yield return base.Setup();

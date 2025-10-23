@@ -10,7 +10,7 @@ public class standard_jump : integration_test_fixture
 {
     protected override string sceneName => "GeometryBodyTestScene";
     private StandardJumpPattern pattern;
-    private GeometryBody body;
+    private IGeometryBody body;
 
     protected override IEnumerator Setup() {
         yield return base.Setup();
@@ -29,7 +29,7 @@ public class standard_jump : integration_test_fixture
         pattern.Jump(body);
         SimulateUpdatesInDuration(body, parameters.timeUp, 0.01f);
         
-        Assert.That(body.transform.position.y, Is.EqualTo(parameters.height).Within(0.005f));
+        Assert.That(body.position.y, Is.EqualTo(parameters.height).Within(0.005f));
         yield return null;
     }
 
@@ -44,7 +44,7 @@ public class standard_jump : integration_test_fixture
         SimulateUpdatesInDuration(body, parameters.timeUp, 0.01f);
         SimulateUpdatesInDuration(body, parameters.timeUp, 0.01f);
         
-        Assert.That(body.transform.position.y, Is.EqualTo(0f).Within(0.005f));
+        Assert.That(body.position.y, Is.EqualTo(0f).Within(0.005f));
         yield return null;
     }
 
@@ -60,7 +60,7 @@ public class standard_jump : integration_test_fixture
         pattern.Jump(body);
         SimulateUpdatesInDuration(body, parameters.timeUp, 0.01f);
         
-        Assert.That(body.transform.position.y, Is.EqualTo(0f).Within(0.005f));
+        Assert.That(body.position.y, Is.EqualTo(0f).Within(0.005f));
         yield return null;
     }
     
@@ -73,9 +73,9 @@ public class standard_jump : integration_test_fixture
         pattern.ForceOnGround();
         pattern.Jump(body);
         SimulateUpdatesWhile(body, 0.01f, t => t.As<GeometryBody>().linearVelocity.y >= 0);
-        float bumpY = body.transform.position.y;
+        float bumpY = body.position.y;
         SimulateUpdatesInDuration(body, 1f, 0.01f);
-        float fallY = body.transform.position.y;
+        float fallY = body.position.y;
         
         Assert.That(fallY, Is.LessThan(bumpY));
         yield return null;

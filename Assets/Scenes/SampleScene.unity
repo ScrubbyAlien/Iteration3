@@ -1702,6 +1702,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 2018527424284836835, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
+      propertyPath: modeManager.mode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5918946826638840003, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.5
@@ -1737,6 +1741,14 @@ PrefabInstance:
     - target: {fileID: 5918946826638840003, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6282640885280733694, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1596157972, guid: 24a132b6cd5958744b19f11a3bd2d509, type: 3}
+    - target: {fileID: 6282640885280733694, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6986016002017048445, guid: a99a9d7be4c2cd141b340c7a3f4c1af0, type: 3}
       propertyPath: m_Name

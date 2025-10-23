@@ -5,13 +5,13 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(BoxCollider2D))]
-public class GeometryBody : MonoBehaviour, ITestable
+public class GeometryBody : MonoBehaviour, IGeometryBody
 {
     public event Action<Collider2D> OnCollide;
-    public event Action<GeometryBody> OnTouchGround;
-    public event Action<GeometryBody> OnTouchCeiling;
-    public event Action<GeometryBody> OnDrop;
-    public event Action<GeometryBody, JumpingParameters> OnJump;
+    public event Action<IGeometryBody> OnTouchGround;
+    public event Action<IGeometryBody> OnTouchCeiling;
+    public event Action<IGeometryBody> OnDrop;
+    public event Action<IGeometryBody, JumpingParameters> OnJump;
     
     [SerializeField, Range(0, 0.3f)]
     private float maxDeltaTime;
@@ -177,22 +177,6 @@ public class GeometryBody : MonoBehaviour, ITestable
     public void SetRotation(float newRotation) {
         float canonRotation = newRotation % 360;
         sprite.transform.rotation = Quaternion.Euler(new Vector3(0, 0, canonRotation));
-    }
-    
-    public void SetParameters(
-        float g = 0, 
-        Vector3 position = default(Vector3), 
-        float rotation = 0,
-        float xVelocity = 0, 
-        float yVelocity = 0,
-        float angularVelocity = 0) 
-    {
-        SetGravity(g);
-        SetPosition(position);
-        SetRotation(rotation);
-        SetXVelocity(xVelocity);
-        SetYVelocity(yVelocity);
-        SetAngularVelocity(angularVelocity);
     }
     
     

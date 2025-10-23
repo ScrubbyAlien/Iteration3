@@ -1,2 +1,5 @@
 sprites
 https://opengameart.org/content/pixel-endless-runner-asset-pack
+
+importera nsubstitute
+https://z4gon.github.io/blog/unity-7-unit-tests-nunit-nsubstitute
