@@ -5,8 +5,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(GeometryBody))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IPlayerController
 {
+    public PlayerController controller => this;
+    
     [SerializeField]
     private float speed;
     private IGeometryBody body;

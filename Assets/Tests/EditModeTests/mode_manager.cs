@@ -3,6 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using NSubstitute;
+using UnityEngine.U2D;
 
 [TestFixture]
 public class mode_manager
@@ -41,4 +42,6 @@ public class mode_manager
         var rocketPattern = manager.GetPattern(ModeManager.Modes.Rocket);
         Assert.That(rocketPattern, Is.InstanceOf<RocketPattern>());
     }
+
+    
 }

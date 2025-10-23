@@ -16,12 +16,12 @@ public abstract class ControlPattern : ScriptableObject
     public abstract void ActionCanceled( InputAction.CallbackContext context, IGeometryBody body);
 
     protected MonoBehaviour mono;
-    public void ActivateControl(PlayerController controller, IGeometryBody body, float speed) {
-        mono = controller;
+    public void ActivateControl(IPlayerController controller, IGeometryBody body, float speed) {
+        mono = controller.controller;
         controller.SetSprite(sprite); 
         OnActivated(body, speed);
     }
-    public void DeactivateControl(PlayerController controller, IGeometryBody body, float speed) {
+    public void DeactivateControl(IPlayerController controller, IGeometryBody body, float speed) {
         mono = null;
         OnDeactivated(body, speed);
     }
