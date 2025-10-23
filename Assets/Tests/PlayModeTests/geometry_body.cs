@@ -76,6 +76,20 @@ public class geometry_body : integration_test_fixture
     }
 
     [UnityTest]
+    public IEnumerator body_collides_with_ceiling() {
+        Vector3 startPos = GetObjectPositionByName("CollideWithCeilingPosition");
+        body.SetParameters(position: startPos, yVelocity: 10);
+        
+        SimulateUpdatesInDuration(body, 0.1f, 0.01f);
+        float y0 = body.transform.position.y;
+        SimulateUpdatesInDuration(body, 0.1f, 0.01f);
+        float y1 = body.transform.position.y; 
+        
+        Assert.That(y1, Is.EqualTo(y0));
+        yield return null;
+    }
+    
+    [UnityTest]
     public IEnumerator body_rotates_in_time() {
         float angularVelocity = 100f;
         float duration = 1.3f;

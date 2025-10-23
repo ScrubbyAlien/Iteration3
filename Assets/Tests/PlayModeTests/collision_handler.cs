@@ -62,4 +62,20 @@ public class collision_handler : integration_test_fixture
         Assert.That(died, Is.False);
         yield return null;
     }
+
+    [UnityTest]
+    public IEnumerator colliding_ceiling_from_below_does_not_kill_player() {
+        Vector3 startPos = GetObjectPositionByName("CeilingCollisionTestPosition");
+        body.SetParameters(position: startPos, yVelocity: 10);
+
+        bool died = false;
+        bool touchingCeiling = false;
+        body.OnTouchCeiling += (_) => touchingCeiling = true;
+        collisionHandler.OnDie += () => died = true;
+        SimulateUpdatesInDuration(body, 1f, 0.01f);
+        
+        Assert.That(touchingCeiling, Is.True);
+        Assert.That(died, Is.False);
+        yield return null;
+    }
 }

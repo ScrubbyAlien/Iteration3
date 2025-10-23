@@ -63,4 +63,21 @@ public class standard_jump : integration_test_fixture
         Assert.That(body.transform.position.y, Is.EqualTo(0f).Within(0.005f));
         yield return null;
     }
+    
+    [UnityTest]
+    public IEnumerator falls_down_after_bumping_ceiling() {
+        Vector3 startPos = GetObjectPositionByName("JumpIntoCeilingPosition");
+        body.SetParameters(position: startPos);
+        pattern.SetJumpingParameters(new JumpingParameters(2f, 2f));
+        
+        pattern.ForceOnGround();
+        pattern.Jump(body);
+        SimulateUpdatesWhile(body, 0.01f, t => t.As<GeometryBody>().linearVelocity.y >= 0);
+        float bumpY = body.transform.position.y;
+        SimulateUpdatesInDuration(body, 1f, 0.01f);
+        float fallY = body.transform.position.y;
+        
+        Assert.That(fallY, Is.LessThan(bumpY));
+        yield return null;
+    }
 }

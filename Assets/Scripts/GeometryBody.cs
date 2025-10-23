@@ -9,6 +9,7 @@ public class GeometryBody : MonoBehaviour, ITestable
 {
     public event Action<Collider2D> OnCollide;
     public event Action<GeometryBody> OnTouchGround;
+    public event Action<GeometryBody> OnTouchCeiling;
     public event Action<GeometryBody> OnDrop;
     public event Action<GeometryBody, JumpingParameters> OnJump;
     
@@ -16,16 +17,24 @@ public class GeometryBody : MonoBehaviour, ITestable
     private float maxDeltaTime;
     private float deltaTime => Mathf.Min(Time.deltaTime, maxDeltaTime);
     [SerializeField]
-    private float gravityConstant;
-    private float baseG;
-    public float g => gravityConstant;
+    private float initialGravity;
+    private float gravity;
+    public float g => gravity;
+    private bool gravitySet;
+    
     private new BoxCollider2D collider;
     private SpriteRenderer sprite;
-    private Vector2 velocity;
-    public Vector2 linearVelocity => velocity;
-    private float angularVelocity;
-    public float rotation => sprite.transform.rotation.eulerAngles.z;
     
+    public Vector2 linearVelocity { get; private set; }
+    public Vector2 position => transform.position;
+    public float angularVelocity { get; private set; }
+    public float rotation {
+        get {
+            if (sprite) return sprite.transform.rotation.eulerAngles.z;
+            else return 0;
+        }
+    }
+
     [SerializeField]
     private LayerMask floorLayers, hazardLayers;
     [SerializeField, Range(-1, 0)]
@@ -41,8 +50,8 @@ public class GeometryBody : MonoBehaviour, ITestable
         public UnityEvent<Collider2D> OnCollide;
     }
 
-    public bool falling => velocity.y <= 0;
-    private bool checkGround;
+    private bool checkGround => linearVelocity.y <= 0;
+    private bool checkCeiling => linearVelocity.y >= 0;
 
     private Vector2 lastPosition;
     private Vector2 nextPosition;
@@ -50,9 +59,9 @@ public class GeometryBody : MonoBehaviour, ITestable
     private void Awake() {
         collider = GetComponent<BoxCollider2D>();
         sprite = GetComponentInChildren<SpriteRenderer>();
-        baseG = gravityConstant;
         lastPosition = transform.position;
         nextPosition = transform.position;
+        if (!gravitySet) gravity = initialGravity;
     }
     
     private void Update() {
@@ -64,32 +73,39 @@ public class GeometryBody : MonoBehaviour, ITestable
 
     public bool enabledForTesting => enabled;
     public void UpdateWithDelta(float delta) {
-        SetYVelocity(velocity.y + g * delta); // Apply gravity
+        SetYVelocity(linearVelocity.y + gravity * delta); // Apply gravity
         SetRotation(sprite.transform.rotation.eulerAngles.z + angularVelocity * delta); // Apply angularVelocity
         
         UpdatePosition(delta);
 
         CheckCollisions();
-
-        if (velocity.y <= 0) checkGround = true;
-        else checkGround = false;
     }
     
 
     private void UpdatePosition(float delta) {
         Vector3 groundCheckPosition = transform.position + new Vector3(0, yGroundCheckOffset, 0);
+        Vector3 ceilingCheckPosition = transform.position - new Vector3(0, yGroundCheckOffset, 0);
         Vector2 size = collider.bounds.size;
-        float nextY = transform.position.y + velocity.y * delta;
-        float nextX = transform.position.x + velocity.x * delta;
-        if (checkGround && OverlapBox(groundCheckPosition, size, floorLayers, out List<Collider2D> results))  
+        float nextY = transform.position.y + linearVelocity.y * delta;
+        float nextX = transform.position.x + linearVelocity.x * delta;
+        if (checkGround && OverlapBox(groundCheckPosition, size, floorLayers, out List<Collider2D> groundResults))  
         {
-            Vector2 highestPoint = results.Select(c => c.ClosestPoint(transform.position)) // closest points
-                                          .Aggregate(((v1, v2) => v1.y > v2.y ? v1 : v2)); // find highest closest point
+            Vector2 highestPoint = groundResults
+                                   .Select(c => c.ClosestPoint(transform.position)) // closest points
+                                   .Aggregate(((v1, v2) => v1.y > v2.y ? v1 : v2)); // find highest closest point
             nextY =  highestPoint.y + collider.bounds.extents.y;
-            velocity.y = 0;
+            SetYVelocity(0);
             OnTouchGround?.Invoke(this);
         }
-        // todo check if touches ceiling
+        // check if touhces ceiling, hurt top of head
+        else if (checkCeiling && OverlapBox(ceilingCheckPosition, size, floorLayers, out List<Collider2D> ceilingResults)) {
+            Vector2 lowestPoint = ceilingResults
+                                  .Select(c => c.ClosestPoint(transform.position)) // closest points
+                                  .Aggregate(((v1, v2) => v1.y < v2.y ? v1 : v2)); // find lowest closest point
+            nextY =  lowestPoint.y - collider.bounds.extents.y;
+            SetYVelocity(0);
+            OnTouchCeiling?.Invoke(this);
+        }
         else OnDrop?.Invoke(this);
         SetPosition(new Vector3(nextX, nextY));
     }
@@ -130,20 +146,20 @@ public class GeometryBody : MonoBehaviour, ITestable
         return nearest;
     }
     
-    public void SetGravity(float newGravityConstant) {
-        gravityConstant = newGravityConstant;
+    public void SetGravity(float newGravity) {
+        gravitySet = true;
+        gravity = newGravity;
     }
-    public void ResetGravity() => gravityConstant = baseG;
+    public void ResetGravity() => gravity = initialGravity;
 
     public void SetXVelocity(float xVelocity) {
-        velocity = new Vector2(xVelocity, velocity.y);
+        linearVelocity = new Vector2(xVelocity, linearVelocity.y);
     }
     public void SetYVelocity(float yVelocity) {
-        if (yVelocity > 0) checkGround = false;
-        velocity = new Vector2(velocity.x, yVelocity);
+        linearVelocity = new Vector2(linearVelocity.x, yVelocity);
     }
     public void SetVelocity(Vector2 newVelocity) {
-        velocity = newVelocity;
+        linearVelocity = newVelocity;
     }
     public void SetAngularVelocity(float newAngularVelocity) {
         angularVelocity = newAngularVelocity;

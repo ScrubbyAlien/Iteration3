@@ -40,6 +40,7 @@ public class StandardJumpPattern : ControlPattern
         this.speed = speed;
         body.OnTouchGround += OnTouchGround;
         body.OnDrop += OnDrop;
+        body.OnTouchCeiling += OnBump;
         body.OnJump += RotateOnJump;
     }
 
@@ -82,6 +83,10 @@ public class StandardJumpPattern : ControlPattern
         onGround = true;
     }
 
+    private void OnBump(GeometryBody body) {
+        body.SetRotation(Next90Deg(body));
+    }
+    
     private void OnDrop(GeometryBody body) {
         if (onGround) {
             body.SetAngularVelocity(FallingAngularVelocity(jumpingParameters));

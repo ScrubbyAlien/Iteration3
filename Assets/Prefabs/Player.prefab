@@ -331,7 +331,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxDeltaTime: 0.02
-  gravityConstant: 0
+  initialGravity: 0
   floorLayers:
     serializedVersion: 2
     m_Bits: 64
