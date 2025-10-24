@@ -15,9 +15,9 @@ public class RocketPattern : ControlPattern
         // throw new System.NotImplementedException();
     }
     public override void ActionPerformed(InputAction.CallbackContext context, IGeometryBody body) {
-        throw new System.NotImplementedException();
+        // todo set gravity to fly up
     }
     public override void ActionCanceled( InputAction.CallbackContext context, IGeometryBody body) {
-        throw new System.NotImplementedException();
+        // todo set gravity to fall down
     }
 }

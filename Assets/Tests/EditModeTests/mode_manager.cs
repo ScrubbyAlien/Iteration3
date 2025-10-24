@@ -16,8 +16,8 @@ public class mode_manager
 
     [Test]
     public void non_empty_constructers_sets_mode_correctly() {
-        ModeManager manager = new() { mode = ModeManager.Modes.Ball };
-        Assert.That(manager.mode, Is.EqualTo(ModeManager.Modes.Ball));
+        ModeManager manager = new() { mode = ModeManager.Modes.Rocket };
+        Assert.That(manager.mode, Is.EqualTo(ModeManager.Modes.Rocket));
     }
 
     [Test]

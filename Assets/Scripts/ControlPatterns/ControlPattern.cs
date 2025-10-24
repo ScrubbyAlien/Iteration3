@@ -7,6 +7,8 @@ public abstract class ControlPattern : ScriptableObject
 {
     [SerializeField]
     private Sprite sprite;
+    [SerializeField]
+    private Vector2 colliderSize = Vector2.one;
     
     public abstract ModeManager.Modes mode { get; }
     public abstract ControlPattern Create();
@@ -18,7 +20,7 @@ public abstract class ControlPattern : ScriptableObject
     protected MonoBehaviour mono;
     public void ActivateControl(IPlayerController controller, IGeometryBody body, float speed) {
         mono = controller.controller;
-        controller.SetSprite(sprite); 
+        controller.SetNewParameters(sprite, colliderSize); 
         OnActivated(body, speed);
     }
     public void DeactivateControl(IPlayerController controller, IGeometryBody body, float speed) {

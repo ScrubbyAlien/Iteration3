@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private float speed;
     private IGeometryBody body;
     private SpriteRenderer spriteRenderer;
+    private BoxCollider2D collider;
+    private TrailRenderer trailRenderer;
     
     [SerializeField]
     private ModeManager modeManager;
@@ -39,11 +41,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
         activeControlPattern?.ActivateControl(this, body, speed);
     }
 
-    public void SetSprite(Sprite sprite) {
+    public void SetNewParameters(Sprite sprite, Vector2 colliderSize) {
         if (!spriteRenderer) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (!collider) collider = GetComponent<BoxCollider2D>();
+        if (!trailRenderer) trailRenderer = GetComponentInChildren<TrailRenderer>();
         spriteRenderer.sprite = sprite;
+        collider.size = colliderSize;
     }
-    
+
     private void OnDrawGizmosSelected() {
         if (body == null) body = GetComponent<GeometryBody>();
         modeManager.GeneratePatternsDictionary();

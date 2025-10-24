@@ -10,5 +10,5 @@ public interface IPlayerController
     public void Canceled(InputAction.CallbackContext context);
 
     public void ChangeMode(ModeManager.Modes mode);
-    public void SetSprite(Sprite sprite);
+    public void SetNewParameters(Sprite sprite, Vector2 colliderSize);
 }

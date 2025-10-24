@@ -44,7 +44,5 @@ public class ModeManager
     {
         Standard,
         Rocket,
-        Ball,
-        Arrow,
     }
 }
