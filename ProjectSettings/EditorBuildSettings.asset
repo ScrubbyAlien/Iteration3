@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tests/RocketPatternTestScene.unity
     guid: d2eb8d3cdd07ea34b99dd3993dfa4937
+  - enabled: 1
+    path: Assets/Scenes/Tests/PortalTestScene.unity
+    guid: a2c321a5f8b8fcd4d8b2610717b1794b
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 0ece5f3e7590ea942867100e42071cc9
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 5d78ff3e4d4984f4fa460ae3ddc2d0ce, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

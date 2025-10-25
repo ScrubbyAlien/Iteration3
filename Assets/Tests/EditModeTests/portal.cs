@@ -17,7 +17,6 @@ public class portal
         // not a super useful test, but I want to practice with nsubstitute
         string path = "TestControlPatterns/TestStandardJumpPattern";
         Sprite sprite = Resources.LoadAll<Sprite>("TestSprites/tileset")[1];
-        TrailRenderer trail = Resources.Load<TrailRenderer>("TestPrefabs/TestTrail");
         
         StandardJumpPattern pattern = Resources.Load<StandardJumpPattern>(path);
         pattern.SetJumpingParameters(new JumpingParameters(1, 0.5f));
@@ -27,5 +26,18 @@ public class portal
         pattern.ActivateControl(controller, body, 10f);
         
         controller.Received().SetNewParameters(sprite, Vector2.one);
+    }
+
+
+    private const string PortalTestPrefab = "TestPrefabs/TestPortal";
+    
+    [Test]
+    public void portal_swaps_mode_to_rocket() {
+        Portal portal = Resources.Load<Portal>(PortalTestPrefab);
+        IPlayerController controller = Substitute.For<IPlayerController>();
+        
+        portal.OnGoingThroughPortal(controller, portal.portalToMode);
+        
+        controller.Received().ChangeMode(portal.portalToMode);
     }
 }
