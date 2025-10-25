@@ -13,6 +13,8 @@ public class RocketPattern : ControlPattern
     public override ModeManager.Modes mode => ModeManager.Modes.Rocket;
     public override ControlPattern Create() {
         RocketPattern pattern = ScriptableObject.CreateInstance<RocketPattern>();
+        pattern.sprite = sprite;
+        pattern.colliderSize = colliderSize;
         pattern.parameters = parameters;
         return pattern;
     }

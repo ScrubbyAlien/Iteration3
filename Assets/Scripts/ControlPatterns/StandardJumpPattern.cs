@@ -30,6 +30,8 @@ public class StandardJumpPattern : ControlPattern
 
     public override ControlPattern Create() {
         StandardJumpPattern pattern = ScriptableObject.CreateInstance<StandardJumpPattern>();
+        pattern.sprite = sprite;
+        pattern.colliderSize = colliderSize;
         pattern.jumpingParameters = jumpingParameters;
         pattern.bufferTime = bufferTime;
         pattern.landingSmoothingTime = landingSmoothingTime;

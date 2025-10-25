@@ -18,7 +18,7 @@ public class portal
         string path = "TestControlPatterns/TestStandardJumpPattern";
         Sprite sprite = Resources.LoadAll<Sprite>("TestSprites/tileset")[1];
         
-        StandardJumpPattern pattern = Resources.Load<StandardJumpPattern>(path);
+        StandardJumpPattern pattern = Resources.Load<StandardJumpPattern>(path).Create() as StandardJumpPattern;
         pattern.SetJumpingParameters(new JumpingParameters(1, 0.5f));
         IPlayerController controller = Substitute.For<IPlayerController>();
         IGeometryBody body = Substitute.For<IGeometryBody>();

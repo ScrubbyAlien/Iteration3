@@ -3,3 +3,9 @@ https://opengameart.org/content/pixel-endless-runner-asset-pack
 
 importera nsubstitute
 https://z4gon.github.io/blog/unity-7-unit-tests-nunit-nsubstitute
+
+music
+Song: Tobu & Diviners - Geometry
+Music provided by NoCopyrightSounds
+Free Download/Stream: http://ncs.io/Geometry
+Watch: http://ncs.lnk.to/GeometryAT/youtube

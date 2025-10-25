@@ -25,11 +25,6 @@ public class BouncePad : MonoBehaviour, ITestable
         UpdateWithDelta(Time.deltaTime);
     }
 
-    private void OnEnable() {
-        Vector3 p = transform.position;
-        transform.position = new Vector3(Mathf.Round(p.x), Mathf.Round(p.y), p.z);
-    }
-
     public void UpdateWithDelta(float delta) {
         if (PlayerInCollider(out GeometryBody body)) {
             float diff = transform.position.x - body.transform.position.x;

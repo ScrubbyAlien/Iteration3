@@ -6,9 +6,9 @@ using UnityEngine.InputSystem;
 public abstract class ControlPattern : ScriptableObject
 {
     [SerializeField]
-    private Sprite sprite;
+    protected Sprite sprite;
     [SerializeField]
-    private Vector2 colliderSize = Vector2.one;
+    protected Vector2 colliderSize = Vector2.one;
     
     public abstract ModeManager.Modes mode { get; }
     public abstract ControlPattern Create();
