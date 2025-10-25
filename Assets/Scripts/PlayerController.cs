@@ -13,8 +13,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private float speed;
     private IGeometryBody body;
     private SpriteRenderer spriteRenderer;
-    private BoxCollider2D collider;
-    private TrailRenderer trailRenderer;
+    private new BoxCollider2D collider;
     
     [SerializeField]
     private ModeManager modeManager;
@@ -28,6 +27,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         body = GetComponent<GeometryBody>();
         InputSystem.actions.FindAction("Player/Action").performed += Performed;
         InputSystem.actions.FindAction("Player/Action").canceled += Canceled;
+        ChangeMode(modeManager.mode);
     }
     
     public void Performed(InputAction.CallbackContext context) => activeControlPattern.ActionPerformed(context, body);
@@ -44,7 +44,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
     public void SetNewParameters(Sprite sprite, Vector2 colliderSize) {
         if (!spriteRenderer) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (!collider) collider = GetComponent<BoxCollider2D>();
-        if (!trailRenderer) trailRenderer = GetComponentInChildren<TrailRenderer>();
         spriteRenderer.sprite = sprite;
         collider.size = colliderSize;
     }

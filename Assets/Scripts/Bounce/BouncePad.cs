@@ -73,7 +73,7 @@ public class BouncePad : MonoBehaviour, ITestable
         for (int i = 0; i < segments; i++) {
             float fraction = i / (segments - 1f);
             float x = fraction * totalTime * displaySpeed;
-            float y = TestHelpers.CalculateDistance(values.velocity, values.gravity, fraction * totalTime);
+            float y = NewtonianMechanics.CalculateDistance(values.velocity, values.gravity, fraction * totalTime);
             vertices[i] = p + new Vector2(x, y);
         }
 

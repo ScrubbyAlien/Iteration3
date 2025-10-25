@@ -2,9 +2,8 @@
 using System.Linq;
 using UnityEngine;
 
-public static class TestHelpers
+public static class NewtonianMechanics
 {
-    
     public static float CalculateDistance(float initialVelocity, float acceleration, float time) {
         float vt = initialVelocity * time;
         float half_at2 = 0.5f * acceleration * time * time;

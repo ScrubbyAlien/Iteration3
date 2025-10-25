@@ -37,10 +37,10 @@ public class StandardJumpPattern : ControlPattern
     }
     
     protected override void OnActivated(IGeometryBody body, float speed) {
+        this.speed = speed;
         values = jumpingParameters.CalculateJumpValues();
         body.SetGravity(values.gravity);
         body.SetXVelocity(speed);
-        this.speed = speed;
         body.OnTouchGround += OnTouchGround;
         body.OnDrop += OnDrop;
         body.OnTouchCeiling += OnBump;
@@ -145,7 +145,7 @@ public class StandardJumpPattern : ControlPattern
         for (int i = 0; i < segments; i++) {
             float fraction = i / (segments - 1f);
             float x = fraction * totalTime * speed;
-            float y = TestHelpers.CalculateDistance(values.velocity, values.gravity, fraction * totalTime);
+            float y = NewtonianMechanics.CalculateDistance(values.velocity, values.gravity, fraction * totalTime);
             vertices[i] = p + new Vector2(x, y);
         }
 

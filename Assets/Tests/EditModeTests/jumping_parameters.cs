@@ -8,7 +8,7 @@ public class jumping_parameters
 {
     [Test]
     public void correct_jump_values() { 
-        // test cases picked with help from desmos https://www.desmos.com/calculator/xueqpih8h6
+        // test cases picked with help from desmos https://www.desmos.com/calculator/z2gfbfa7w6
         
         JumpingParameters parameters = new();
         parameters.height = 2f;

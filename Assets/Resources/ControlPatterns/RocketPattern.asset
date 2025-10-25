@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 1155609640, guid: 24a132b6cd5958744b19f11a3bd2d509, type: 3}
   colliderSize: {x: 1, y: 0.75}
-  trailRendererPrefab: {fileID: 6596054646439828762, guid: 6178b7df11dfb884aafb3bab8ce2e364, type: 3}
+  parameters:
+    upwardThurst: 40
+    downwardThrust: -30
+    maximumYVelocity: 14

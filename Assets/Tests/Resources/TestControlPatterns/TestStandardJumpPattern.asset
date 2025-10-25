@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: TestStandardJumpPattern
   m_EditorClassIdentifier: 
   sprite: {fileID: 6007627129536956325, guid: c57ea35f228025f499acfc11c490000f, type: 3}
+  colliderSize: {x: 1, y: 1}
   jumpingParameters:
     height: 0
-    timeUp: 0
+    timeUp: 0.01
   bufferTime: 0
   landingSmoothingTime: 0

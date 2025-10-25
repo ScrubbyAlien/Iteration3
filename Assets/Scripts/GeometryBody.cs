@@ -7,6 +7,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(BoxCollider2D))]
 public class GeometryBody : MonoBehaviour, IGeometryBody
 {
+    public event Action<IGeometryBody, Vector2> OnChangeVelocity;
     public event Action<Collider2D> OnCollide;
     public event Action<IGeometryBody> OnTouchGround;
     public event Action<IGeometryBody> OnTouchCeiling;
@@ -81,7 +82,6 @@ public class GeometryBody : MonoBehaviour, IGeometryBody
         CheckCollisions();
     }
     
-
     private void UpdatePosition(float delta) {
         Vector3 groundCheckPosition = transform.position + new Vector3(0, yGroundCheckOffset, 0);
         Vector3 ceilingCheckPosition = transform.position - new Vector3(0, yGroundCheckOffset, 0);
@@ -152,14 +152,15 @@ public class GeometryBody : MonoBehaviour, IGeometryBody
     }
     public void ResetGravity() => gravity = initialGravity;
 
-    public void SetXVelocity(float xVelocity) {
-        linearVelocity = new Vector2(xVelocity, linearVelocity.y);
+    public void SetXVelocity(float xVelocity, bool invokeEvent = true) {
+        SetVelocity(new Vector2(xVelocity, linearVelocity.y), invokeEvent);
     }
-    public void SetYVelocity(float yVelocity) {
-        linearVelocity = new Vector2(linearVelocity.x, yVelocity);
+    public void SetYVelocity(float yVelocity, bool invokeEvent = true) {
+        SetVelocity(new Vector2(linearVelocity.x, yVelocity), invokeEvent);
     }
-    public void SetVelocity(Vector2 newVelocity) {
+    public void SetVelocity(Vector2 newVelocity, bool invokeEvent = true) {
         linearVelocity = newVelocity;
+        if (invokeEvent) OnChangeVelocity?.Invoke(this, linearVelocity);
     }
     public void SetAngularVelocity(float newAngularVelocity) {
         angularVelocity = newAngularVelocity;
@@ -176,6 +177,7 @@ public class GeometryBody : MonoBehaviour, IGeometryBody
     }
     public void SetRotation(float newRotation) {
         float canonRotation = newRotation % 360;
+        if (!sprite) sprite = GetComponentInChildren<SpriteRenderer>();
         sprite.transform.rotation = Quaternion.Euler(new Vector3(0, 0, canonRotation));
     }
     

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public interface IGeometryBody : ITestable
 {
+    public event Action<IGeometryBody, Vector2> OnChangeVelocity;
     public event Action<Collider2D> OnCollide;
     public event Action<IGeometryBody> OnTouchGround;
     public event Action<IGeometryBody> OnTouchCeiling;
@@ -20,9 +21,9 @@ public interface IGeometryBody : ITestable
     public void SetGravity(float newGravity);
     public void ResetGravity();
 
-    public void SetXVelocity(float xVelocity);
-    public void SetYVelocity(float yVelocity);
-    public void SetVelocity(Vector2 newVelocity);
+    public void SetXVelocity(float xVelocity, bool invokeEvent = true);
+    public void SetYVelocity(float yVelocity, bool invokeEvent = true);
+    public void SetVelocity(Vector2 newVelocity, bool invokeEvent = true);
     public void SetAngularVelocity(float newAngularVelocity);
 
     public void SetPosition(Vector3 position);

@@ -25,10 +25,10 @@ public class geometry_body : integration_test_fixture
         float interval = 0.25f;
         
         SimulateUpdatesInDuration(body, interval, 0.01f);
-        float expectedDistance1 = TestHelpers.CalculateDistance(0, -1, interval);
+        float expectedDistance1 = NewtonianMechanics.CalculateDistance(0, -1, interval);
         float y1 = body.position.y;
         SimulateUpdatesInDuration(body, interval, 0.01f);
-        float expectedDistance2 = TestHelpers.CalculateDistance(0, -1, interval * 2);
+        float expectedDistance2 = NewtonianMechanics.CalculateDistance(0, -1, interval * 2);
         float y2 = body.position.y;
         
         Assert.That(y1, Is.EqualTo(expectedDistance1).Within(0.005f));
