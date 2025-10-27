@@ -1,12 +1,15 @@
 ﻿using System;
+using NSubstitute.Extensions;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(GeometryBody))]
 public class CollisionHandler : MonoBehaviour
 {
     [SerializeField]
     private ParticleSystem explosion;
-    
+
+    public UnityEvent OnPlayerDie;
     public event Action OnDie;
     private IGeometryBody body;
 
@@ -20,5 +23,6 @@ public class CollisionHandler : MonoBehaviour
         gameObject.SetActive(false);
         Instantiate(explosion, transform.position, Quaternion.identity);
         OnDie?.Invoke();
+        OnPlayerDie?.Invoke();
     }
 }

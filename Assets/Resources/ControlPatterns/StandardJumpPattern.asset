@@ -15,7 +15,7 @@ MonoBehaviour:
   sprite: {fileID: -1596157972, guid: 24a132b6cd5958744b19f11a3bd2d509, type: 3}
   colliderSize: {x: 1, y: 1}
   jumpingParameters:
-    height: 2.5
-    timeUp: 0.22
+    height: 2.2
+    timeUp: 0.23
   bufferTime: 0.1
   landingSmoothingTime: 0.1

@@ -19,6 +19,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private ModeManager modeManager;
     public ControlPattern activeControlPattern { get; private set; }
 
+    [SerializeField]
+    private bool displayJumpX;
+    private List<Vector3> positions;
+    
     private void OnValidate() {
         ChangeMode(modeManager.mode);
     }
@@ -28,9 +32,18 @@ public class PlayerController : MonoBehaviour, IPlayerController
         InputSystem.actions.FindAction("Player/Action").performed += Performed;
         InputSystem.actions.FindAction("Player/Action").canceled += Canceled;
         ChangeMode(modeManager.mode);
+        positions = new();
+    }
+
+    private void OnDisable() {
+        InputSystem.actions.FindAction("Player/Action").performed -= Performed;
+        InputSystem.actions.FindAction("Player/Action").canceled -= Canceled;
     }
     
-    public void Performed(InputAction.CallbackContext context) => activeControlPattern.ActionPerformed(context, body);
+    public void Performed(InputAction.CallbackContext context) {
+        positions.Add(transform.position);
+        activeControlPattern.ActionPerformed(context, body);
+    }
     public void Canceled(InputAction.CallbackContext context) => activeControlPattern.ActionCanceled(context, body);
 
     public void ChangeMode(ModeManager.Modes mode) {
@@ -52,5 +65,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (body == null) body = GetComponent<GeometryBody>();
         modeManager.GeneratePatternsDictionary();
         modeManager.GetPatternGizmo().Invoke(body, speed);
+    }
+
+    private void OnDrawGizmos() {
+        if (positions == null || !displayJumpX) return;
+        Gizmos.color = Color.green;
+        foreach (Vector3 position in positions) {
+            Gizmos.DrawLine(new Vector3(position.x, 10f, 0), new Vector3(position.x, -10f));
+        }
     }
 }

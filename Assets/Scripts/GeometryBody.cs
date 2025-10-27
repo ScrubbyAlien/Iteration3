@@ -42,6 +42,8 @@ public class GeometryBody : MonoBehaviour, IGeometryBody
     private float yGroundCheckOffset;
     [SerializeField, Range(0, 1)]
     private float collisionCheckOffset;
+    [SerializeField]
+    private float collisionAngle;
     
     [SerializeField]
     private GeometryBodyEvents events;
@@ -109,27 +111,31 @@ public class GeometryBody : MonoBehaviour, IGeometryBody
         else OnDrop?.Invoke(this);
         SetPosition(new Vector3(nextX, nextY));
     }
-    
+
     private void CheckCollisions() {
         Vector2 hazardCheckSize = new Vector2(collisionCheckOffset, collisionCheckOffset);
         Vector3 sideWallCheckPos = transform.position + Vector3.right * collisionCheckOffset;
-        
+
         // Check hazards
         if (OverlapBox(transform.position, hazardCheckSize, hazardLayers, out List<Collider2D> resultsForward)) {
             resultsForward.ForEach(result => OnCollide?.Invoke(result));
         }
-        
+
         // Check if colliding with wall from side
         if (OverlapBox(sideWallCheckPos, collider.size, floorLayers, out List<Collider2D> results)) {
             results.ForEach(result => {
                 Vector3 closest = result.ClosestPoint(transform.position);
                 Vector2 toClosest = ((Vector2)(closest - transform.position)).normalized;
-                if (Vector2.Angle(Vector2.right, toClosest) < 45f) { // check if the collision happened to the right of the player
+                if (Vector2.Angle(Vector2.right, toClosest) < collisionAngle) { // check if the collision happened to the right of the player
                     OnCollide?.Invoke(result);
                 }
+                // else if (Vector2.SignedAngle(Vector2.right, toClosest) > collisionAngle) {
+                //     OnTouchGround?.Invoke(this);
+                // }
+                // else if ()
             });
         }
-        
+
     }
 
     public void Jump(JumpingParameters parameters) {
