@@ -12,7 +12,7 @@ public class Portal : MonoBehaviour, IPortal
     [SerializeField]
     private LayerMask playerLayers;
 
-    private new CapsuleCollider2D collider;
+    private CapsuleCollider2D collider;
     
 
     public ModeManager.Modes portalToMode => mode;
